@@ -1,17 +1,14 @@
 # Active Context: Oracle SQL Single-Row Functions Learning Platform
 
 ## Estado Actual
-- **Fase**: Implementación y Verificación Completadas con Éxito.
+- **Fase**: Corrección de bug visual (Renderizado de texto y tablas markdown en el curso).
 - **Acción Reciente**:
-  - Creación del motor completo de funciones Oracle SQL (`functions.js`).
-  - Implementación del motor SQL cliente en memoria (`sqlEngine.js`) con ejecución verificada de las 17 consultas del PDF.
-  - Desarrollo de los 6 visualizadores interactivos especializados (String Anatomy, Number Scale, Date Machine, RR Century Matrix, Null/Logic Flow, Nesting Pipeline).
-  - Creación de los 8 módulos del curso interactivo con teoría, ejemplos del PDF y botón para ejecutar consultas.
-  - Implementación de los retos de Practice 3 y 12 quizzes interactivos con evaluación instantánea.
-  - Creación del diccionario/cheatsheet completo y visualizador del esquema `EMPLOYEES` y `DUAL`.
-  - Verificación visual mediante capturas de pantalla headless Chrome en todas las vistas.
+  - Detección de que las tablas en markdown dentro de `curriculum.js` se muestran como texto plano sin procesar con pipes (`|`) en lugar de tablas HTML con filas y columnas formateadas.
+  - Corrección del formateador markdown en `js/app.js` para renderizar correctamente tablas HTML (`<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`), listas, párrafos y negritas.
 - **Siguiente Paso**:
-  - Generar el artefacto `walkthrough.md` y entregar la solución al usuario.
+  - Actualizar `js/app.js` con un parser markdown ligero y robusto.
+  - Verificar en el navegador con captura de pantalla que las tablas y textos se ven impecables.
+  - Sincronizar memoria del proyecto.
 
 ## Focos Activos
-- Proyecto 100% operativo y listo para uso educativo inmediato.
+- Corregir el renderizado de texto y tablas en el Módulo 2 y demás módulos del curso.
