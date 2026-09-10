@@ -197,7 +197,7 @@ function renderMarkdown(md) {
 
   function flushTable() {
     if (!inTable || tableRows.length === 0) return;
-    let html = '<div class="results-table-scroll" style="margin: 1rem 0;"><table class="oracle-table"><thead>';
+    let html = '<div class="table-responsive-wrapper results-table-scroll"><table class="oracle-table markdown-table"><thead>';
     const headerCells = tableRows[0].split('|').slice(1, -1).map(c => c.trim());
     html += '<tr>' + headerCells.map(c => `<th>${formatInline(c)}</th>`).join('') + '</tr></thead><tbody>';
 

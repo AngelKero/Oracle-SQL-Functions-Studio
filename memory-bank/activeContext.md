@@ -1,18 +1,19 @@
 # Active Context: Oracle SQL Single-Row Functions Learning Platform
 
 ## Estado Actual
-- **Fase**: Reemplazo de Emojis por Iconos SVG Profesionales (Completado).
-- **Acción Realizada**:
-  - Creación del módulo centralizado de iconos vectoriales SVG `js/data/icons.js` (basado en el set estandarizado de Lucide/Feather con `viewBox="0 0 24 24"`, stroke de 2px, esquinas redondeadas y escalabilidad limpia).
-  - Sustitución de todos los emojis del sistema por SVGs semánticos en:
-    - `index.html`: Logo de la cabecera (`zap`), pestañas principales de navegación (`bookOpen`, `flask`, `terminal`, `target`, `fileText`, `database`), pestañas del laboratorio visual (`type`, `hash`, `calendar`, `refreshCw`, `scale`, `layers`), títulos de secciones y botones de ejecución SQL (`play`).
-    - `js/data/curriculum.js`: Claves de icono actualizadas (`zap`, `type`, `hash`, `calendar`, `calendarDays`, `refreshCw`, `layers`, `scale`) y limpieza de emojis en listas y diagramas.
-    - `js/app.js`: Integración de `getIcon` en la barra lateral del curso, encabezados de módulo (`heading-icon`), botones de prueba rápida en SQL Studio (`btn-icon`), botones de retos prácticos y pistas, insignias de retroalimentación de quizzes (`checkCircle`, `xCircle`) y botones del cheatsheet.
-    - Visualizadores (`dateVisualizer.js`, `nestingVisualizer.js`, `nullLogicVisualizer.js`, `numberVisualizer.js`, `rrFormatVisualizer.js`, `stringVisualizer.js`): Actualización de encabezados con SVG, flechas de tubería y diagramas de flujo con iconos SVG limpios.
-    - `css/styles.css` y `css/sql-studio.css`: Nuevas clases de utilidad para `.svg-icon`, `.btn-icon`, `.heading-icon`, y diseño mejorado para `.mod-icon` con badge cuadrado estilizado con resplandor cian.
-- **Resultado**:
-  - Verificación por script: 0 emojis restantes en todo el código fuente de la aplicación.
-  - Verificación de tests: 100% de tests pasando (`test_markdown.js`, `test_functions.js`, `test_sql_engine.js`).
+- **Fase**: Corrección de Desbordamiento de Tablas Grandes (Container Break Fix).
+- **Problema Reportado**:
+  - Tablas muy grandes (como las tablas comparativas de sintaxis en el Módulo 2 y otros módulos del curso) rompen el contenedor de la vista de detalle `.module-detail-view`, causando que el layout se desborde o se rompa visualmente.
+- **Causa Raíz Identificada**:
+  1. En CSS Grid / Flexbox, los contenedores hijos tienen por defecto `min-width: auto`, lo cual provoca que un elemento de contenido ancho (como una etiqueta `<table>` markdown) fuerce la expansión del contenedor padre más allá del viewport.
+  2. Las tablas generadas por `renderMarkdown` en `js/app.js` se renderizan como `<table>` directas sin un wrapper contenedor con `overflow-x: auto` o sin `min-width: 0` en `.curriculum-layout`, `.module-detail-view` y `.mod-prose`.
+  3. Las celdas `<td>` y `<th>` pueden no tener `word-break` o reglas de ancho máximo controladas.
+- **Acción a Realizar**:
+  - Envolver las tablas renderizadas por markdown en un contenedor `<div class="table-responsive-wrapper">` o aplicar estilos CSS completos a `.mod-prose table` y contenedores (`min-width: 0; display: block; max-width: 100%; overflow-x: auto;`).
+  - Aplicar `min-width: 0` a `.curriculum-layout`, `.module-detail-view`, `.mod-section-block` y `.mod-prose`.
+  - Estilizar el scrollbar horizontal de las tablas para que sea elegante, estilizado y coherente con el modo oscuro cyber-glass.
+  - Verificar tablas en todas las vistas: Módulos del Curso, SQL Studio, Esquema BD y Cheatsheet.
+  - Comprobar que no se desborde ninguna tabla en resoluciones estándar y móviles.
 
 ## Focos Activos
-- Mantener la plataforma en estado óptimo y responder a cualquier ajuste adicional que el usuario solicite.
+- Garantizar que ninguna tabla desborde su tarjeta contenedora, manteniendo un desplazamiento horizontal suave e impecable.
