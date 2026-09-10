@@ -1,14 +1,14 @@
 # Active Context: Oracle SQL Single-Row Functions Learning Platform
 
 ## Estado Actual
-- **Fase**: Corrección de bug visual (Renderizado de texto y tablas markdown en el curso).
+- **Fase**: Bug Crítico Visual Resuelto y Verificado.
 - **Acción Reciente**:
-  - Detección de que las tablas en markdown dentro de `curriculum.js` se muestran como texto plano sin procesar con pipes (`|`) en lugar de tablas HTML con filas y columnas formateadas.
-  - Corrección del formateador markdown en `js/app.js` para renderizar correctamente tablas HTML (`<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`), listas, párrafos y negritas.
+  - Corrección del bug de renderizado de texto markdown en las secciones del curso: anteriormente las tablas con pipes (`|`) se concatenaban como un solo bloque de texto continuo sin procesar.
+  - Implementación de la función `renderMarkdown(md)` en `js/app.js` que convierte tablas markdown a elementos HTML semánticos (`<table class="oracle-table">`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`), listas ordenadas/desordenadas y bloques de código.
+  - Añadido soporte de enrutamiento por hash (`#mod-2`, `#mod-3`, etc.) para navegación directa.
+  - Verificación visual con captura de pantalla headless Chrome (`screenshot_fixed_modulo2.png`) confirmando que las tablas y textos se muestran con formato tabular impecable.
 - **Siguiente Paso**:
-  - Actualizar `js/app.js` con un parser markdown ligero y robusto.
-  - Verificar en el navegador con captura de pantalla que las tablas y textos se ven impecables.
-  - Sincronizar memoria del proyecto.
+  - Notificar al usuario y confirmar la resolución.
 
 ## Focos Activos
-- Corregir el renderizado de texto y tablas en el Módulo 2 y demás módulos del curso.
+- Plataforma 100% pulida, libre de errores de renderizado y sincronizada en GitHub.
