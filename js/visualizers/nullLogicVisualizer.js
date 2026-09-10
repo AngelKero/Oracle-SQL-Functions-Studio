@@ -4,13 +4,14 @@
  */
 
 import { NVL, NVL2, NULLIF, COALESCE, DECODE } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderNullLogicVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>⚖️ Manejo de Nulos y Lógica Condicional (Flowcharts)</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('scale', 'svg-icon', 22)}</span> Manejo de Nulos y Lógica Condicional (Flowcharts)</h3>
           <p class="viz-desc">Comprende cómo evalúan caminos lógicos NVL, NVL2, NULLIF, COALESCE y cómo bifurcan CASE y DECODE.</p>
         </div>
         <div class="viz-badge">NVL / NVL2 / NULLIF / COALESCE / CASE / DECODE</div>
@@ -52,17 +53,17 @@ export function renderNullLogicVisualizer(container) {
 
           <div class="flow-diagram-container">
             <div class="flow-node node-start">NVL(expr1, expr2)</div>
-            <div class="flow-arrow">▼</div>
+            <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
             <div class="flow-decision" id="nvl-decision">¿expr1 es NULL?</div>
             <div class="flow-branches">
               <div class="branch branch-yes" id="nvl-b-yes">
                 <span class="branch-label">SÍ (Es NULL)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>expr2</strong> (Reemplazo)</div>
               </div>
               <div class="branch branch-no" id="nvl-b-no">
                 <span class="branch-label">NO (Tiene Valor)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>expr1</strong> (Original)</div>
               </div>
             </div>
@@ -115,17 +116,17 @@ export function renderNullLogicVisualizer(container) {
 
           <div class="flow-diagram-container">
             <div class="flow-node node-start">NVL2(expr1, expr2, expr3)</div>
-            <div class="flow-arrow">▼</div>
+            <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
             <div class="flow-decision">¿expr1 es NOT NULL?</div>
             <div class="flow-branches">
               <div class="branch branch-yes" id="nvl2-b-notnull">
                 <span class="branch-label">SÍ (NOT NULL)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>expr2</strong> ('SAL+COMM')</div>
               </div>
               <div class="branch branch-no" id="nvl2-b-null">
                 <span class="branch-label">NO (Es NULL)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>expr3</strong> ('SAL')</div>
               </div>
             </div>
@@ -173,17 +174,17 @@ export function renderNullLogicVisualizer(container) {
 
           <div class="flow-diagram-container">
             <div class="flow-node node-start">NULLIF(expr1, expr2)</div>
-            <div class="flow-arrow">▼</div>
+            <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
             <div class="flow-decision">¿expr1 = expr2?</div>
             <div class="flow-branches">
               <div class="branch branch-yes" id="nullif-b-equal">
                 <span class="branch-label">SÍ (Son Iguales)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>NULL</strong></div>
               </div>
               <div class="branch branch-no" id="nullif-b-diff">
                 <span class="branch-label">NO (Son Diferentes)</span>
-                <div class="flow-arrow">▼</div>
+                <div class="flow-arrow">${getIcon('arrowDown', 'svg-icon', 16)}</div>
                 <div class="flow-node node-res">Devuelve <strong>expr1</strong></div>
               </div>
             </div>
@@ -230,13 +231,13 @@ export function renderNullLogicVisualizer(container) {
 
           <div class="coalesce-ladder">
             <div class="ladder-step" id="l-step-1">
-              <span class="step-num">1</span> Evalúa expr1 (manager_id) ➔ <span class="step-res" id="lbl-l1">NULL</span>
+              <span class="step-num">1</span> Evalúa expr1 (manager_id) -> <span class="step-res" id="lbl-l1">NULL</span>
             </div>
             <div class="ladder-step" id="l-step-2">
-              <span class="step-num">2</span> Evalúa expr2 (commission_pct) ➔ <span class="step-res" id="lbl-l2">NULL</span>
+              <span class="step-num">2</span> Evalúa expr2 (commission_pct) -> <span class="step-res" id="lbl-l2">NULL</span>
             </div>
             <div class="ladder-step" id="l-step-3">
-              <span class="step-num">3</span> Evalúa expr3 (-1) ➔ <span class="step-res" id="lbl-l3">-1</span>
+              <span class="step-num">3</span> Evalúa expr3 (-1) -> <span class="step-res" id="lbl-l3">-1</span>
             </div>
           </div>
 
@@ -262,8 +263,8 @@ export function renderNullLogicVisualizer(container) {
         const v2 = c2.checked ? null : 0.20;
         const v3 = c3.checked ? null : -1;
 
-        lblL1.textContent = v1 === null ? 'NULL ➔ Pasa al siguiente' : `${v1} (¡SE DETIENE AQUÍ!)`;
-        lblL2.textContent = v2 === null ? 'NULL ➔ Pasa al siguiente' : `${v2} (¡SE DETIENE AQUÍ!)`;
+        lblL1.textContent = v1 === null ? 'NULL -> Pasa al siguiente' : `${v1} (¡SE DETIENE AQUÍ!)`;
+        lblL2.textContent = v2 === null ? 'NULL -> Pasa al siguiente' : `${v2} (¡SE DETIENE AQUÍ!)`;
         lblL3.textContent = v3 === null ? 'NULL' : `${v3} (¡SE DETIENE AQUÍ!)`;
 
         const r = COALESCE(v1, v2, v3);

@@ -4,13 +4,14 @@
  */
 
 import { ROUND, TRUNC, MOD } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderNumberVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>🔢 Recta Numérica y Precisión Decimal (ROUND vs. TRUNC)</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('hash', 'svg-icon', 22)}</span> Recta Numérica y Precisión Decimal (ROUND vs. TRUNC)</h3>
           <p class="viz-desc">Comprende cómo los índices positivos redondean decimales, el índice 0 redondea al entero y los índices negativos (-1, -2) redondean a decenas o centenas.</p>
         </div>
         <div class="viz-badge">ROUND / TRUNC / MOD</div>
@@ -59,7 +60,7 @@ export function renderNumberVisualizer(container) {
 
       <!-- MOD Calculator Section -->
       <div class="mod-section">
-        <h4>⚡ Simulador de Residuo: MOD(m, n)</h4>
+        <h4 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('calculator', 'svg-icon', 18)}</span> Simulador de Residuo: MOD(m, n)</h4>
         <div class="mod-controls">
           <div class="mod-input-group">
             <label>Dividendo (m):</label>

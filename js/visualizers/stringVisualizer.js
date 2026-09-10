@@ -4,13 +4,14 @@
  */
 
 import { SUBSTR, INSTR, LPAD, RPAD, TRIM, REPLACE, LENGTH, LOWER, UPPER, INITCAP } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderStringVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>🔬 Inspector Visual de Cadenas (String Anatomy)</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('type', 'svg-icon', 22)}</span> Inspector Visual de Cadenas (String Anatomy)</h3>
           <p class="viz-desc">Visualiza cómo Oracle indexa caracteres (1-based), interpreta índices negativos y realiza cortes, rellenos y búsquedas.</p>
         </div>
         <div class="viz-badge">Índices 1-Based & Negativos</div>
@@ -42,8 +43,8 @@ export function renderStringVisualizer(container) {
       <!-- Interactive String Ruler & Character Matrix -->
       <div class="ruler-container">
         <div class="ruler-header">
-          <span class="ruler-tag tag-pos">▲ Índices Positivos (1 a N)</span>
-          <span class="ruler-tag tag-neg">▼ Índices Negativos (-N a -1)</span>
+          <span class="ruler-tag tag-pos">${getIcon('arrowUp', 'svg-icon', 12)} Índices Positivos (1 a N)</span>
+          <span class="ruler-tag tag-neg">${getIcon('arrowDown', 'svg-icon', 12)} Índices Negativos (-N a -1)</span>
         </div>
         <div id="str-chars-matrix" class="char-matrix"></div>
       </div>
@@ -193,7 +194,7 @@ export function renderStringVisualizer(container) {
         ${m > 0 
           ? `• Posición inicial <strong>${m}</strong> (1-based): Comienza en el carácter #${m} ('${text[m-1] || ''}').` 
           : `• Posición inicial negativa <strong>${m}</strong>: Cuenta hacia atrás desde el final (${len} + ${m} = índice 0-based ${len+m}).`}
-        <br>• Extrae <strong>${n}</strong> caracteres ➔ Resultado: <span class="highlight-val">'${result}'</span>
+        <br>• Extrae <strong>${n}</strong> caracteres -> Resultado: <span class="highlight-val">'${result}'</span>
       `;
     } else if (fn === 'INSTR') {
       const target = container.querySelector('#param-target')?.value || '';

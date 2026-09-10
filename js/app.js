@@ -9,6 +9,7 @@ import { EMPLOYEES_TABLE, EMPLOYEES_SCHEMA, DUAL_TABLE } from './data/employees.
 import { CURRICULUM_MODULES } from './data/curriculum.js';
 import { PRACTICE_EXERCISES, QUIZ_QUESTIONS } from './data/exercises.js';
 import { CHEATSHEET_DATA } from './data/cheatsheet.js';
+import { getIcon } from './data/icons.js';
 
 import { renderStringVisualizer } from './visualizers/stringVisualizer.js';
 import { renderNumberVisualizer } from './visualizers/numberVisualizer.js';
@@ -315,7 +316,7 @@ function initCurriculumView() {
   // Render Sidebar
   sidebar.innerHTML = CURRICULUM_MODULES.map((m, idx) => `
     <div class="module-nav-item ${idx === 0 ? 'active' : ''}" data-mod-id="${m.id}">
-      <span class="mod-icon">${m.icon}</span>
+      <span class="mod-icon">${getIcon(m.icon, 'svg-icon', 20)}</span>
       <div class="mod-info">
         <div class="mod-num">Módulo ${m.number} • ${m.pdfPages}</div>
         <div class="mod-title">${m.title}</div>
@@ -340,7 +341,9 @@ function initCurriculumView() {
       if (s.sampleCode) {
         extra += `
           <div class="code-snippet-box">
-            <button type="button" class="btn-run-sample" data-sql="${encodeURIComponent(s.sampleCode)}">⚡ Probar en SQL Studio</button>
+            <button type="button" class="btn-run-sample" data-sql="${encodeURIComponent(s.sampleCode)}">
+              ${getIcon('zap', 'btn-icon', 14)} Probar en SQL Studio
+            </button>
             <pre><code>${s.sampleCode}</code></pre>
           </div>
         `;
@@ -360,7 +363,7 @@ function initCurriculumView() {
 
     detailContainer.innerHTML = `
       <div class="mod-detail-header">
-        <h2>${mod.icon} Módulo ${mod.number}: ${mod.title}</h2>
+        <h2 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon(mod.icon, 'svg-icon', 24)}</span> Módulo ${mod.number}: ${mod.title}</h2>
         <div class="mod-detail-sub">${mod.subtitle}</div>
         <p class="viz-desc" style="margin-top: 0.5rem;">${mod.summary}</p>
       </div>
@@ -369,9 +372,11 @@ function initCurriculumView() {
 
       ${mod.sampleQuery ? `
         <div class="card-panel" style="margin-top: 2rem;">
-          <h4 style="color: #fff; margin-bottom: 0.75rem;">🚀 Consulta Integradora del Módulo</h4>
+          <h4 style="color: #fff; margin-bottom: 0.75rem; display: flex; align-items: center;"><span class="heading-icon">${getIcon('rocket', 'svg-icon', 18)}</span> Consulta Integradora del Módulo</h4>
           <div class="code-snippet-box">
-            <button type="button" class="btn-run-sample" data-sql="${encodeURIComponent(mod.sampleQuery)}">⚡ Abrir en SQL Studio</button>
+            <button type="button" class="btn-run-sample" data-sql="${encodeURIComponent(mod.sampleQuery)}">
+              ${getIcon('zap', 'btn-icon', 14)} Abrir en SQL Studio
+            </button>
             <pre><code>${mod.sampleQuery}</code></pre>
           </div>
         </div>
@@ -582,8 +587,12 @@ function initPracticesView() {
         <pre><code id="code-${p.id}">${p.starterSql}</code></pre>
       </div>
       <div style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="btn-primary btn-run-chal" data-sql="${encodeURIComponent(p.starterSql)}" data-id="${p.id}">⚡ Probar en Consola</button>
-        <button type="button" class="btn-secondary btn-hint-chal" data-hint="${encodeURIComponent(p.hint)}">💡 Ver Pista</button>
+        <button type="button" class="btn-primary btn-run-chal" data-sql="${encodeURIComponent(p.starterSql)}" data-id="${p.id}">
+          ${getIcon('terminal', 'btn-icon', 14)} Probar en Consola
+        </button>
+        <button type="button" class="btn-secondary btn-hint-chal" data-hint="${encodeURIComponent(p.hint)}">
+          ${getIcon('lightbulb', 'btn-icon', 14)} Ver Pista
+        </button>
       </div>
       <div id="hint-${p.id}" class="callout-box callout-tip" style="display: none; margin-top: 1rem;"></div>
     </div>
@@ -640,7 +649,7 @@ function initPracticesView() {
       if (isCorrect) {
         correctCount++;
         label.classList.add('correct-opt');
-        explBox.innerHTML = `<strong>¡Correcto! 🎉</strong> ${q.explanation}`;
+        explBox.innerHTML = `<span class="heading-icon" style="color: var(--emerald-primary);">${getIcon('checkCircle', 'svg-icon', 18)}</span> <strong>¡Correcto!</strong> ${q.explanation}`;
         explBox.style.background = 'rgba(16, 185, 129, 0.15)';
         explBox.style.color = '#6ee7b7';
       } else {
@@ -648,7 +657,7 @@ function initPracticesView() {
         // highlight the correct one
         const correctLabel = card.querySelector(`[data-opt-idx="${q.answer}"]`);
         if (correctLabel) correctLabel.classList.add('correct-opt');
-        explBox.innerHTML = `<strong>Incorrecto.</strong> ${q.explanation}`;
+        explBox.innerHTML = `<span class="heading-icon" style="color: var(--rose-primary);">${getIcon('xCircle', 'svg-icon', 18)}</span> <strong>Incorrecto.</strong> ${q.explanation}`;
         explBox.style.background = 'rgba(244, 63, 94, 0.15)';
         explBox.style.color = '#fda4af';
       }
@@ -698,7 +707,9 @@ function initCheatsheetView() {
           <span style="color: var(--emerald-primary);">${item.output}</span>
         </div>
         <div class="cheat-actions">
-          <button type="button" class="btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" data-sql="${encodeURIComponent(item.sqlExample)}">⚡ Probar en Studio</button>
+          <button type="button" class="btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" data-sql="${encodeURIComponent(item.sqlExample)}">
+            ${getIcon('play', 'btn-icon', 12)} Probar en Studio
+          </button>
         </div>
       </div>
     `).join('');

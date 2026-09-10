@@ -14,13 +14,14 @@ import {
   LAST_DAY,
   MONTH_NAMES
 } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderDateVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>📅 Máquina del Tiempo de Fechas Oracle (Date Machine)</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('calendar', 'svg-icon', 22)}</span> Máquina del Tiempo de Fechas Oracle (Date Machine)</h3>
           <p class="viz-desc">Explora la regla crítica del día 16 para ROUND(date, 'MONTH') y del 1 de Julio para ROUND(date, 'YEAR'), más aritmética de días y horas.</p>
         </div>
         <div class="viz-badge">ROUND / TRUNC / MONTHS_BETWEEN</div>
@@ -68,7 +69,7 @@ export function renderDateVisualizer(container) {
 
       <!-- Specialized Date Operations Bar -->
       <div class="date-ops-section">
-        <h4>⚡ Funciones de Calendario Relacionales</h4>
+        <h4 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('calendarDays', 'svg-icon', 18)}</span> Funciones de Calendario Relacionales</h4>
         <div class="ops-grid">
           <div class="op-card">
             <div class="op-name">LAST_DAY(date)</div>
@@ -138,14 +139,14 @@ export function renderDateVisualizer(container) {
       thresholdBox.innerHTML = `
         <div class="threshold-track">
           <div class="track-segment seg-down ${!isPast16 ? 'active' : ''}">
-            Días 1 a 15 ➔ 1 de ${monthName}
+            Días 1 a 15 -> 1 de ${monthName}
           </div>
           <div class="track-divider">
             <span class="divider-line"></span>
             <span class="divider-badge">Día 16 (Corte)</span>
           </div>
           <div class="track-segment seg-up ${isPast16 ? 'active' : ''}">
-            Días 16 a 31 ➔ 1 del Mes Siguiente
+            Días 16 a 31 -> 1 del Mes Siguiente
           </div>
         </div>
         <div class="threshold-status">
@@ -164,14 +165,14 @@ export function renderDateVisualizer(container) {
       thresholdBox.innerHTML = `
         <div class="threshold-track">
           <div class="track-segment seg-down ${!isPastJuly ? 'active' : ''}">
-            Enero a Junio ➔ 1 de Enero de ${dateObj.getFullYear()}
+            Enero a Junio -> 1 de Enero de ${dateObj.getFullYear()}
           </div>
           <div class="track-divider">
             <span class="divider-line"></span>
             <span class="divider-badge">1 de Julio (Corte)</span>
           </div>
           <div class="track-segment seg-up ${isPastJuly ? 'active' : ''}">
-            Julio a Diciembre ➔ 1 de Enero de ${dateObj.getFullYear() + 1}
+            Julio a Diciembre -> 1 de Enero de ${dateObj.getFullYear() + 1}
           </div>
         </div>
         <div class="threshold-status">

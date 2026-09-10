@@ -4,13 +4,14 @@
  */
 
 import { resolveRRYear } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderRRFormatVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>🔄 Matriz de Decisión del Siglo: Formato RR vs. YY</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('refreshCw', 'svg-icon', 22)}</span> Matriz de Decisión del Siglo: Formato RR vs. YY</h3>
           <p class="viz-desc">Resuelve el enigma del cambio de milenio de Oracle: cómo interpreta fechas de 2 dígitos según el año actual del sistema.</p>
         </div>
         <div class="viz-badge">Diapositivas 35-36</div>
@@ -157,7 +158,7 @@ export function renderRRFormatVisualizer(container) {
     if (!isCurrLow && isSpecLow) centuryRuleText = 'Siglo Siguiente (+100 años)';
     if (!isCurrLow && !isSpecLow) centuryRuleText = 'Mismo siglo (Siglo Actual)';
 
-    descRR.textContent = `Regla activada: ${centuryRuleText} ➔ ${fullRR}`;
+    descRR.textContent = `Regla activada: ${centuryRuleText} -> ${fullRR}`;
     descYY.textContent = `Sin ajuste: Siglo actual ${currentCentury} + ${specYear} = ${fullYY}`;
 
     explanationBox.innerHTML = `
@@ -166,7 +167,7 @@ export function renderRRFormatVisualizer(container) {
       • <strong>Año introducido:</strong> <code>'${String(specYear).padStart(2, '0')}'</code> (${isSpecLow ? 'rango 0-49' : 'rango 50-99'}).<br>
       • <strong>Decisión Oracle RR:</strong> Asigna el <strong>${centuryRuleText.toUpperCase()}</strong>.<br>
       • ${fullRR !== fullYY 
-        ? `<span class="alert-diff">⚠️ <strong>Diferencia Crítica con YY:</strong> Con formato <code>RR</code> obtienes <strong>${fullRR}</strong>, mientras que el formato obsoleto <code>YY</code> daría erróneamente <strong>${fullYY}</strong>.</span>` 
+        ? `<span class="alert-diff"><span class="heading-icon" style="color: var(--amber-primary);">${getIcon('alertTriangle', 'svg-icon', 16)}</span> <strong>Diferencia Crítica con YY:</strong> Con formato <code>RR</code> obtienes <strong>${fullRR}</strong>, mientras que el formato obsoleto <code>YY</code> daría erróneamente <strong>${fullYY}</strong>.</span>` 
         : `<span>Ambos formatos coinciden en el año <strong>${fullRR}</strong> en este cuadrante.</span>`}
     `;
   }

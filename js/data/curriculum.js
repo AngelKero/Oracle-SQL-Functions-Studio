@@ -10,7 +10,7 @@ export const CURRICULUM_MODULES = [
     title: 'Fundamentos de Funciones SQL',
     subtitle: 'Funciones de Fila Única (Single-Row) vs. Funciones Múltiples (Multiple-Row)',
     pdfPages: 'Págs. 1 - 5',
-    icon: '⚡',
+    icon: 'zap',
     summary: 'Comprende el rol fundamental de las funciones en SQL, los dos grandes tipos de funciones y las características esenciales de las funciones de fila única.',
     sections: [
       {
@@ -23,9 +23,9 @@ En Oracle SQL, una **función** es un programa almacenado que toma cero o más a
 - **Salida (Output):** Un valor resultante.
         `,
         diagram: `
-[ Argumento 1, Argumento 2 ] ──▶ ┌────────────────────────┐ ──▶ [ Valor Resultante ]
+[ Argumento 1, Argumento 2 ] ──> ┌────────────────────────┐ ──> [ Valor Resultante ]
                                   │  FUNCIÓN DE FILA ÚNICA │
-[   Fila de la Tabla     ] ──▶ └────────────────────────┘
+[   Fila de la Tabla     ] ──> └────────────────────────┘
         `
       },
       {
@@ -54,11 +54,11 @@ Oracle clasifica las funciones en dos categorías fundamentales:
         content: `
 En este curso analizamos las cinco familias principales de funciones de fila única descritas en el estándar de Oracle:
 
-- 🔤 **Funciones de Carácter:** Aceptan caracteres como entrada y pueden devolver valores de caracteres o números.
-- 🔢 **Funciones Numéricas:** Aceptan entradas numéricas y devuelven valores numéricos.
-- 📅 **Funciones de Fecha:** Operan sobre valores de tipo \`DATE\` de Oracle.
-- 🔄 **Funciones de Conversión:** Convierten valores de un tipo de dato a otro (ej. fecha a texto, número a texto).
-- ⚙️ **Funciones Generales y Condicionales:** Manejo avanzado de valores nulos (\`NVL\`, \`COALESCE\`) y ramificación lógica (\`CASE\`, \`DECODE\`).
+- **Funciones de Carácter:** Aceptan caracteres como entrada y pueden devolver valores de caracteres o números.
+- **Funciones Numéricas:** Aceptan entradas numéricas y devuelven valores numéricos.
+- **Funciones de Fecha:** Operan sobre valores de tipo \`DATE\` de Oracle.
+- **Funciones de Conversión:** Convierten valores de un tipo de dato a otro (ej. fecha a texto, número a texto).
+- **Funciones Generales y Condicionales:** Manejo avanzado de valores nulos (\`NVL\`, \`COALESCE\`) y ramificación lógica (\`CASE\`, \`DECODE\`).
         `
       }
     ],
@@ -73,7 +73,7 @@ WHERE department_id = 90;`
     title: 'Funciones de Carácter',
     subtitle: 'Manipulación de Mayúsculas/Minúsculas y Manipulación de Cadenas',
     pdfPages: 'Págs. 6 - 10',
-    icon: '🔤',
+    icon: 'type',
     summary: 'Aprende a transformar y extraer texto con LOWER, UPPER, INITCAP, CONCAT, SUBSTR, LENGTH, INSTR, LPAD, RPAD, TRIM y REPLACE.',
     sections: [
       {
@@ -129,7 +129,7 @@ WHERE  SUBSTR(job_id, 4) = 'REP';`
     title: 'Funciones Numéricas',
     subtitle: 'Redondeo, Truncado y Módulo Matemático (ROUND, TRUNC, MOD)',
     pdfPages: 'Págs. 11 - 14',
-    icon: '🔢',
+    icon: 'hash',
     summary: 'Domina cómo controlar la precisión numérica: redondeo hacia arriba/abajo con ROUND, descarte directo con TRUNC y cálculo de residuos con MOD.',
     sections: [
       {
@@ -184,7 +184,7 @@ WHERE  job_id = 'SA_REP';`
     title: 'Fechas y Aritmética de Fechas',
     subtitle: 'El Formato Interno de Oracle, SYSDATE y Operaciones Temporales',
     pdfPages: 'Págs. 15 - 18',
-    icon: '📅',
+    icon: 'calendar',
     summary: 'Aprende cómo almacena Oracle internamente las fechas (7 bytes), la función del sistema SYSDATE y cómo sumar, restar y calcular semanas o días.',
     sections: [
       {
@@ -239,7 +239,7 @@ WHERE  department_id = 90;`
     title: 'Funciones de Fecha Especializadas',
     subtitle: 'MONTHS_BETWEEN, ADD_MONTHS, NEXT_DAY, LAST_DAY, ROUND y TRUNC',
     pdfPages: 'Págs. 19 - 22',
-    icon: '🗓️',
+    icon: 'calendarDays',
     summary: 'Aprende a calcular intervalos exactos entre meses, sumar meses a calendarios, obtener el último día de un mes y redondear/truncar fechas.',
     sections: [
       {
@@ -291,7 +291,7 @@ WHERE  department_id = 60;`
     title: 'Funciones de Conversión y Formato RR',
     subtitle: 'Conversión Implícita, Explícita, TO_CHAR, TO_DATE y la Matriz del Siglo RR',
     pdfPages: 'Págs. 23 - 36',
-    icon: '🔄',
+    icon: 'refreshCw',
     summary: 'Descubre cómo convertir de forma segura entre NUMBER, CHARACTER y DATE con modelos de formato avanzados y comprende a fondo el formato de año RR.',
     sections: [
       {
@@ -370,7 +370,7 @@ WHERE  hire_date < TO_DATE('01-JAN-90', 'DD-MON-RR');`
     title: 'Anidamiento de Funciones',
     subtitle: 'Evaluación de Adentro hacia Afuera (Inside-Out Pipeline)',
     pdfPages: 'Págs. 37 - 38',
-    icon: '🪆',
+    icon: 'layers',
     summary: 'Comprende cómo se procesan las funciones anidadas en cascada y cómo componer múltiples transformaciones en una sola consulta.',
     sections: [
       {
@@ -394,9 +394,9 @@ Nivel 1:           SUBSTR(LAST_NAME, 1, 8),
         content: `
 Para el empleado con \`LAST_NAME = 'Lorentz'\`:
 
-1. **Paso 1 (SUBSTR más interno):** \`SUBSTR('Lorentz', 1, 8)\` extrae hasta 8 caracteres ➔ \`'Lorentz'\`.
-2. **Paso 2 (CONCAT intermedio):** Concatena el resultado con \`'_US'\` ➔ \`'Lorentz_US'\`.
-3. **Paso 3 (UPPER exterior):** Convierte la cadena resultante a mayúsculas ➔ \`'LORENTZ_US'\`.
+1. **Paso 1 (SUBSTR más interno):** \`SUBSTR('Lorentz', 1, 8)\` extrae hasta 8 caracteres -> \`'Lorentz'\`.
+2. **Paso 2 (CONCAT intermedio):** Concatena el resultado con \`'_US'\` -> \`'Lorentz_US'\`.
+3. **Paso 3 (UPPER exterior):** Convierte la cadena resultante a mayúsculas -> \`'LORENTZ_US'\`.
         `,
         sampleCode: `SELECT last_name,
        UPPER(CONCAT(SUBSTR(last_name, 1, 8), '_US')) AS "CODE"
@@ -417,7 +417,7 @@ WHERE  department_id = 60;`
     title: 'Funciones Generales y Condicionales',
     subtitle: 'Manejo de Nulos (NVL, NVL2, NULLIF, COALESCE) y Expresiones CASE / DECODE',
     pdfPages: 'Págs. 39 - 51',
-    icon: '⚖️',
+    icon: 'scale',
     summary: 'Aprende a controlar valores nulos con NVL/NVL2/COALESCE e implementar bifurcaciones lógicas IF-THEN-ELSE con CASE y DECODE.',
     sections: [
       {

@@ -749,6 +749,9 @@
   color: var(--text-subtle);
   font-size: 1.25rem;
   margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flow-branches {

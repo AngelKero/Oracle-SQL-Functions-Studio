@@ -327,6 +327,46 @@ body {
   background: var(--bg-secondary);
 }
 
+/* SVG Vector Icon System */
+.svg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+}
+
+.tab-btn .svg-icon,
+.sub-tab-btn .svg-icon,
+.btn-primary .svg-icon,
+.btn-secondary .svg-icon {
+  margin-right: 0.35rem;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+  stroke: currentColor;
+  fill: none;
+  flex-shrink: 0;
+}
+
+.heading-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  stroke: currentColor;
+  fill: none;
+  flex-shrink: 0;
+}
+
 /* Cards & Panels */
 .card-panel {
   background: var(--bg-glass-card);

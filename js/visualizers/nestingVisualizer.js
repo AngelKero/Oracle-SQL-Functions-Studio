@@ -4,13 +4,14 @@
  */
 
 import { SUBSTR, CONCAT, UPPER, LOWER, LENGTH } from '../engine/functions.js';
+import { getIcon } from '../data/icons.js';
 
 export function renderNestingVisualizer(container) {
   container.innerHTML = `
     <div class="visualizer-card">
       <div class="viz-header">
         <div>
-          <h3>🪆 Tubería de Anidamiento de Funciones (Pipeline Inside-Out)</h3>
+          <h3 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon('layers', 'svg-icon', 22)}</span> Tubería de Anidamiento de Funciones (Pipeline Inside-Out)</h3>
           <p class="viz-desc">Observa el viaje de un dato a través de capas concéntricas de funciones evaluadas desde el nivel más interno al más externo.</p>
         </div>
         <div class="viz-badge">Diapositivas 37-38</div>
@@ -41,7 +42,7 @@ export function renderNestingVisualizer(container) {
 
       <!-- Pipeline Node Visualizer -->
       <div class="pipeline-container">
-        <div class="pipeline-title">Flujo de Transformación Paso a Paso (Dentro ➔ Fuera)</div>
+        <div class="pipeline-title">Flujo de Transformación Paso a Paso (Dentro ${getIcon('arrowRight', 'svg-icon', 14)} Fuera)</div>
         <div class="pipeline-nodes-row" id="pipeline-nodes"></div>
       </div>
 
@@ -139,7 +140,7 @@ export function renderNestingVisualizer(container) {
         </div>
       `;
       if (!isLast) {
-        html += `<div class="pipe-arrow">➔</div>`;
+        html += `<div class="pipe-arrow">${getIcon('arrowRight', 'svg-icon', 20)}</div>`;
       }
     });
 
