@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oracle SQL Single-Row Functions Studio | Plataforma Interactiva de Aprendizaje</title>
+  <meta name="description" content="Aprende y domina todas las funciones de fila única en Oracle SQL (caracteres, números, fechas, formato RR, nulos, CASE y DECODE) de forma visual e interactiva con datos reales de Scott/HR." />
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/visualizers.css" />
+  <link rel="stylesheet" href="css/sql-studio.css" />
+</head>
+<body>
+
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="brand-area">
+      <div class="logo-badge">⚡</div>
+      <div class="brand-text">
+        <h1>Oracle SQL Functions Studio</h1>
+        <p>Using Single-Row Functions to Customize Output</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-wrapper" aria-label="Navegación principal">
+      <button type="button" class="tab-btn active" data-view="curso">📘 Curso Interactivo</button>
+      <button type="button" class="tab-btn" data-view="visualizers">🔬 Laboratorio Visual</button>
+      <button type="button" class="tab-btn" data-view="studio">💻 SQL Studio</button>
+      <button type="button" class="tab-btn" data-view="practicas">🎯 Prácticas & Quizzes</button>
+      <button type="button" class="tab-btn" data-view="cheatsheet">📑 Cheatsheet</button>
+      <button type="button" class="tab-btn" data-view="schema">📊 Esquema BD</button>
+    </nav>
+
+    <!-- Header Actions & Simulation State -->
+    <div class="header-actions">
+      <div class="sysdate-pill" id="sysdate-pill" title="Haz clic para alternar entre la fecha de ejemplo del PDF (2003) y la fecha de hoy">
+        <span class="pulse-dot"></span>
+        <span id="sysdate-display">SYSDATE: 25-JUL-03 (Demo PDF)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-content">
+
+    <!-- VIEW 1: CURSO INTERACTIVO (8 MÓDULOS DEL PDF) -->
+    <section id="view-curso" class="view-section active">
+      <div class="curriculum-layout">
+        <!-- Sidebar with 8 modules -->
+        <aside class="modules-sidebar" id="curriculum-sidebar"></aside>
+
+        <!-- Detail Content Panel -->
+        <div class="module-detail-view" id="curriculum-detail"></div>
+      </div>
+    </section>
+
+
+    <!-- VIEW 2: LABORATORIO VISUAL (6 HERRAMIENTAS INTERACTIVAS) -->
+    <section id="view-visualizers" class="view-section">
+      <div class="sub-tab-bar" style="margin-bottom: 2rem;">
+        <button type="button" class="sub-tab-btn viz-sub-tab active" data-viz="string">🔤 String Slicer & Indexes</button>
+        <button type="button" class="sub-tab-btn viz-sub-tab" data-viz="number">🔢 Number Precision (ROUND vs TRUNC)</button>
+        <button type="button" class="sub-tab-btn viz-sub-tab" data-viz="date">📅 Date Machine (Regla Día 16 & Jul 1)</button>
+        <button type="button" class="sub-tab-btn viz-sub-tab" data-viz="rr">🔄 Matriz de Siglo RR vs YY</button>
+        <button type="button" class="sub-tab-btn viz-sub-tab" data-viz="null">⚖️ Nulos & Flowcharts (NVL/CASE/DECODE)</button>
+        <button type="button" class="sub-tab-btn viz-sub-tab" data-viz="nesting">🪆 Pipeline de Anidamiento</button>
+      </div>
+
+      <!-- 1. String Container -->
+      <div id="viz-string-container" class="viz-panel active"></div>
+
+      <!-- 2. Number Container -->
+      <div id="viz-number-container" class="viz-panel"></div>
+
+      <!-- 3. Date Container -->
+      <div id="viz-date-container" class="viz-panel"></div>
+
+      <!-- 4. RR Matrix Container -->
+      <div id="viz-rr-container" class="viz-panel"></div>
+
+      <!-- 5. Null Flow Container -->
+      <div id="viz-null-container" class="viz-panel"></div>
+
+      <!-- 6. Nesting Pipeline Container -->
+      <div id="viz-nesting-container" class="viz-panel"></div>
+    </section>
+
+
+    <!-- VIEW 3: SQL STUDIO EN VIVO -->
+    <section id="view-studio" class="view-section">
+      <div class="studio-layout">
+        <!-- Editor Box -->
+        <div class="editor-container">
+          <!-- Toolbar -->
+          <div class="studio-toolbar">
+            <div class="toolbar-left">
+              <select id="preset-query-select" class="modern-select query-preset-select"></select>
+            </div>
+            <div class="toolbar-right">
+              <button type="button" id="btn-format-sql" class="btn-secondary" title="Dar formato básico al SQL">Format</button>
+              <button type="button" id="btn-clear-sql" class="btn-secondary" title="Limpiar editor">Limpiar</button>
+              <button type="button" id="btn-run-sql" class="btn-primary" title="Ejecutar consulta (Ctrl+Enter)">▶ Ejecutar SQL</button>
+            </div>
+          </div>
+
+          <!-- Textarea Editor -->
+          <div class="editor-wrapper">
+            <textarea id="sql-editor" class="sql-textarea" spellcheck="false" placeholder="Escribe tu consulta SQL aquí... Ej: SELECT last_name, salary, ROUND(salary/3, 2) FROM employees WHERE department_id = 90;"></textarea>
+          </div>
+
+          <!-- Footer with metrics -->
+          <div class="editor-footer">
+            <span>Atajo: Presiona <strong>Ctrl + Enter</strong> (o <strong>Cmd + Enter</strong>) para ejecutar</span>
+            <div class="metrics-bar">
+              <div class="metric-item">Filas: <strong id="metric-rows">0</strong></div>
+              <div class="metric-item">Tiempo: <strong id="metric-time">0 ms</strong></div>
+              <div class="metric-item">Tablas: <strong>EMPLOYEES, DUAL</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="results-container">
+          <div class="results-header">
+            <h4>📊 Resultados de la Consulta</h4>
+            <span style="font-size: 0.8rem; color: var(--text-subtle);">Oracle SQL In-Memory Engine</span>
+          </div>
+          <div id="sql-results-container">
+            <div style="padding: 2rem; text-align: center; color: var(--text-subtle);">
+              Escribe una consulta y pulsa "Ejecutar SQL" o selecciona uno de los ejemplos del PDF arriba.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- VIEW 4: PRÁCTICAS & QUIZZES -->
+    <section id="view-practicas" class="view-section">
+      <div class="card-panel" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 style="font-family: var(--font-display); color: #fff; font-size: 1.5rem;">🎯 Laboratorio de Evaluación y Práctica</h2>
+          <p class="viz-desc">Desafíos prácticos basados en la <em>Practice 3</em> del PDF y quizzes de preguntas de examen.</p>
+        </div>
+        <div id="quiz-score-badge" class="result-code" style="font-size: 1rem;">Puntuación: 0 / 12</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <!-- Column 1: Practice 3 Guided Challenges -->
+        <div>
+          <h3 style="color: var(--cyan-primary); font-family: var(--font-display); margin-bottom: 1rem;">💻 Retos de Código: Practice 3 del PDF</h3>
+          <div id="challenges-container" class="practice-container"></div>
+        </div>
+
+        <!-- Column 2: Conceptual Quizzes -->
+        <div>
+          <h3 style="color: var(--violet-primary); font-family: var(--font-display); margin-bottom: 1rem;">📝 Cuestionario de Dominio (Quizzes)</h3>
+          <div id="quizzes-container"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- VIEW 5: CHEATSHEET -->
+    <section id="view-cheatsheet" class="view-section">
+      <div class="card-panel" style="margin-bottom: 2rem;">
+        <h2 style="font-family: var(--font-display); color: #fff; font-size: 1.5rem; margin-bottom: 0.5rem;">📑 Diccionario de Funciones de Fila Única</h2>
+        <p class="viz-desc">Guía rápida de referencia de sintaxis, parámetros, tipos de retorno y ejemplos para cada función del curso.</p>
+      </div>
+
+      <div class="cheatsheet-toolbar">
+        <input type="text" id="cheatsheet-search-input" class="modern-input cheatsheet-search" placeholder="🔍 Buscar función por nombre, descripción o sintaxis (ej. SUBSTR, ROUND, NVL)..." />
+        <div id="cat-filter-bar" class="category-filter-bar"></div>
+      </div>
+
+      <div id="cheatsheet-grid" class="cheatsheet-grid"></div>
+    </section>
+
+
+    <!-- VIEW 6: ESQUEMA BD (EMPLOYEES & DUAL) -->
+    <section id="view-schema" class="view-section">
+      <div class="card-panel" style="margin-bottom: 2rem;">
+        <h2 style="font-family: var(--font-display); color: #fff; font-size: 1.5rem; margin-bottom: 0.5rem;">📊 Esquema de Base de Datos (Oracle HR Sample)</h2>
+        <p class="viz-desc">Estructura canónica de la tabla EMPLOYEES y vista preliminar de registros cargados en memoria.</p>
+      </div>
+
+      <!-- Column definitions -->
+      <div class="results-container" style="margin-bottom: 2rem;">
+        <div class="results-header">
+          <h4>🏛️ Diccionario de Columnas: Tabla EMPLOYEES</h4>
+          <span style="font-size: 0.8rem; color: var(--cyan-primary);">11 Columnas Estándar</span>
+        </div>
+        <div class="results-table-scroll">
+          <table class="oracle-table">
+            <thead>
+              <tr>
+                <th>Columna</th>
+                <th>Tipo de Dato</th>
+                <th>Nullable</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody id="schema-columns-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sample data -->
+      <div class="results-container">
+        <div class="results-header">
+          <h4>👥 Muestra de Registros Activos (Tabla EMPLOYEES)</h4>
+          <span style="font-size: 0.8rem; color: var(--emerald-primary);">Registros del PDF (King, Higgins, Ernst, Lorentz, etc.)</span>
+        </div>
+        <div class="results-table-scroll">
+          <table class="oracle-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Hire Date</th>
+                <th>Job ID</th>
+                <th>Salary</th>
+                <th>Comm %</th>
+                <th>Dept ID</th>
+              </tr>
+            </thead>
+            <tbody id="employees-data-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Oracle Database SQL: <em>Using Single-Row Functions to Customize Output</em> • Creado con JavaScript moderno, CSS Grid y arquitectura de simulación en cliente.</p>
+  </footer>
+
+  <!-- Script Modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

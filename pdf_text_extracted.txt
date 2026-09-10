@@ -1,0 +1,675 @@
+=== PAGE 1 ===
+Using Single-Row 
+Functions to 
+Customize Output 
+
+
+=== PAGE 2 ===
+SQL Functions
+Function
+Input
+arg 1
+arg 2
+arg n
+Function performs 
+action
+Output
+Result
+value
+
+
+=== PAGE 3 ===
+Two Types of SQL Functions
+Single-row 
+functions
+Multiple-row
+functions
+Return one result 
+per row
+Return one result 
+per set of rows
+Functions
+
+
+=== PAGE 4 ===
+Single-Row Functions
+• Single-row functions:
+• Manipulate data items
+• Accept arguments and return one value
+• Act on each row that is returned
+• Return one result per row
+• May modify the data type
+• Can be nested
+• Accept arguments that can be a column or an expression
+function_name [(arg1, arg2,...)]
+
+
+=== PAGE 5 ===
+Single-Row Functions
+Conversion
+Character
+Number
+Date
+General
+Single-row 
+functions
+
+
+=== PAGE 6 ===
+Character Functions
+Character
+functions
+LOWER
+UPPER
+INITCAP
+CONCAT
+SUBSTR
+LENGTH
+INSTR
+LPAD | RPAD
+TRIM
+REPLACE
+Case-manipulation 
+functions
+Character-manipulation
+functions
+
+
+=== PAGE 7 ===
+Case-Manipulation Functions
+• These functions convert case for character strings:
+Function
+Result
+LOWER('SQL Course')
+sql course
+UPPER('SQL Course')
+SQL COURSE
+INITCAP('SQL Course')
+Sql Course
+
+
+=== PAGE 8 ===
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  LOWER(last_name) = 'higgins';
+Using Case-Manipulation Functions
+• Display the employee number, name, and department number for 
+employee Higgins:
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  last_name = 'higgins';
+no rows selected
+
+
+=== PAGE 9 ===
+Character-Manipulation Functions
+• These functions manipulate character strings:
+Function
+Result
+CONCAT('Hello', 'World')
+HelloWorld
+SUBSTR('HelloWorld',1,5)
+Hello
+LENGTH('HelloWorld')
+10
+INSTR('HelloWorld', 'W')
+6
+LPAD(salary,10,'*')
+*****24000
+RPAD(salary, 10, '*')
+24000*****
+REPLACE
+('JACK and JUE','J','BL') 
+BLACK and BLUE 
+TRIM('H' FROM 'HelloWorld')
+elloWorld
+
+
+=== PAGE 10 ===
+SELECT employee_id, CONCAT(first_name, last_name) NAME, 
+       job_id, LENGTH (last_name), 
+       INSTR(last_name, 'a') "Contains 'a'?"
+FROM   employees
+WHERE  SUBSTR(job_id, 4) = 'REP';
+Using the Character-Manipulation 
+Functions
+2
+3
+1
+2
+1
+3
+
+
+=== PAGE 11 ===
+Number Functions
+• ROUND: Rounds value to specified decimal
+• TRUNC: Truncates value to specified decimal
+• MOD: Returns remainder of division
+Function
+Result
+ROUND(45.926, 2)
+45.93
+TRUNC(45.926, 2)
+45.92
+MOD(1600, 300)
+100
+
+
+=== PAGE 12 ===
+SELECT ROUND(45.923,2), ROUND(45.923,0),
+       ROUND(45.923,-1)
+FROM   DUAL;
+Using the ROUND Function
+DUAL is a dummy table that you can use to view results 
+from functions and calculations.
+3
+3
+1
+2
+1
+2
+
+
+=== PAGE 13 ===
+Using the TRUNC Function
+SELECT ROUND(45.923,2), ROUND(45.923),
+       ROUND(45.923,-1)
+FROM   DUAL;
+3
+3
+1
+2
+1
+2
+
+
+=== PAGE 14 ===
+SELECT last_name, salary, MOD(salary, 5000)
+FROM   employees
+WHERE  job_id = 'SA_REP';
+Using the MOD Function
+• For all employees with job title of Sales Representative, calculate 
+the remainder of the salary after it is divided by 5,000.
+
+
+=== PAGE 15 ===
+SELECT last_name, hire_date
+FROM   employees
+WHERE  hire_date < '01-FEB-88';
+';
+Working with Dates
+• The Oracle database stores dates in an internal numeric format: 
+century, year, month, day, hours, minutes, and seconds.
+• The default date display format is DD-MON-RR.
+• Enables you to store 21st-century dates in the
+20th century by specifying only the last two digits of the year 
+• Enables you to store 20th-century dates in the
+21st century in the same way 
+
+
+=== PAGE 16 ===
+Working with Dates
+• SYSDATE is a function that returns:
+• Date 
+• Time
+
+
+=== PAGE 17 ===
+Arithmetic with Dates
+• Add or subtract a number to or from a date for a resultant date value.
+• Subtract two dates to find the number of days between those dates.
+• Add hours to a date by dividing the number of hours by 24.
+
+
+=== PAGE 18 ===
+SELECT last_name, (SYSDATE-hire_date)/7 AS WEEKS
+FROM   employees
+WHERE  department_id = 90;
+Using Arithmetic Operators
+with Dates
+
+
+=== PAGE 19 ===
+Date Functions
+Function
+Result
+MONTHS_BETWEEN
+Number of months between two dates
+ADD_MONTHS
+Add calendar months to date
+NEXT_DAY
+Next day of the date specified
+LAST_DAY
+Last day of the month
+ROUND
+Round date
+TRUNC
+Truncate date
+
+
+=== PAGE 20 ===
+Using Date Functions
+Function
+Result
+MONTHS_BETWEEN
+           ('01-SEP-95','11-JAN-94')
+19.6774194
+ADD_MONTHS ('11-JAN-94',6)
+'11-JUL-94'
+NEXT_DAY   ('01-SEP-95','FRIDAY')
+'08-SEP-95'
+LAST_DAY   ('01-FEB-95')
+'28-FEB-95'
+
+
+=== PAGE 21 ===
+Using Date Functions
+Assume SYSDATE = '25-JUL-03':
+Function
+Result
+ROUND(SYSDATE,'MONTH')
+01-AUG-03
+ROUND(SYSDATE ,'YEAR')
+01-JAN-04
+TRUNC(SYSDATE ,'MONTH')
+01-JUL-03
+TRUNC(SYSDATE ,'YEAR')
+01-JAN-03
+
+
+=== PAGE 22 ===
+Practice 3: Overview of Part 1
+• This practice covers the following topics:
+• Writing a query that displays the current date 
+• Creating queries that require the use of numeric, character, and date 
+functions
+• Performing calculations of years and months of service for an employee
+
+
+=== PAGE 23 ===
+Conversion Functions
+Implicit data type
+conversion
+Explicit data type
+conversion
+Data type
+conversion
+
+
+=== PAGE 24 ===
+Implicit Data Type Conversion
+• For assignments, the Oracle server can automatically convert 
+the following:
+From
+To
+VARCHAR2 or CHAR
+NUMBER
+VARCHAR2 or CHAR
+DATE
+NUMBER
+VARCHAR2
+DATE
+VARCHAR2
+
+
+=== PAGE 25 ===
+Implicit Data Type Conversion
+• For expression evaluation, the Oracle Server can automatically 
+convert the following:
+From
+To
+VARCHAR2 or CHAR
+NUMBER
+VARCHAR2 or CHAR
+DATE
+
+
+=== PAGE 26 ===
+Explicit Data Type Conversion
+NUMBER
+CHARACTER
+TO_CHAR
+TO_NUMBER
+DATE
+TO_CHAR
+TO_DATE
+
+
+=== PAGE 27 ===
+Explicit Data Type Conversion
+NUMBER
+CHARACTER
+TO_CHAR
+TO_NUMBER
+DATE
+TO_CHAR
+TO_DATE
+
+
+=== PAGE 28 ===
+Using the TO_CHAR Function with Dates
+•
+• The format model:
+• Must be enclosed by single quotation marks
+• Is case-sensitive
+• Can include any valid date format element
+• Has an fm element to remove padded blanks or suppress leading zeros
+• Is separated from the date value by a comma
+TO_CHAR(date, 'format_model')
+
+
+=== PAGE 29 ===
+Elements of the Date Format Model
+Element
+Result
+YYYY
+Full year in numbers
+YEAR
+Year spelled out (in English)
+MM
+Two-digit value for month
+MONTH
+Full name of the month
+MON
+Three-letter abbreviation of the month
+DY
+Three-letter abbreviation of the day of the 
+week
+DAY
+Full name of the day of the week
+DD
+Numeric day of the month
+
+
+=== PAGE 30 ===
+Elements of the Date Format Model
+• Time elements format the time portion of the date:
+• Add character strings by enclosing them in double quotation marks:
+• Number suffixes spell out numbers:
+DD "of" MONTH
+12 of OCTOBER
+ddspth
+fourteenth
+HH24:MI:SS AM
+15:45:32 PM
+
+
+=== PAGE 31 ===
+SELECT last_name,
+       TO_CHAR(hire_date, 'fmDD Month YYYY')
+       AS HIREDATE
+FROM   employees;
+Using the TO_CHAR Function with Dates
+…
+
+
+=== PAGE 32 ===
+Using the TO_CHAR Function with 
+Numbers
+• These are some of the format elements that you can use with 
+the TO_CHAR function to display a number value as a 
+character:
+Element
+Result
+9
+Represents a number
+0
+Forces a zero to be displayed
+$
+Places a floating dollar sign
+L
+Uses the floating local currency symbol
+.
+Prints a decimal point
+,
+Prints a comma as thousands indicator
+TO_CHAR(number, 'format_model')
+
+
+=== PAGE 33 ===
+SELECT TO_CHAR(salary, '$99,999.00') SALARY
+FROM   employees
+WHERE  last_name = 'Ernst';
+Using the TO_CHAR Function with 
+Numbers
+
+
+=== PAGE 34 ===
+Using the TO_NUMBER and TO_DATE 
+Functions 
+• Convert a character string to a number format using the TO_NUMBER 
+function:
+• Convert a character string to a date format using the TO_DATE 
+function:
+• These functions have an fx modifier. This modifier specifies the exact 
+matching for the character argument and date format model of a 
+TO_DATE function.
+TO_NUMBER(char[, 'format_model'])
+TO_DATE(char[, 'format_model'])
+
+
+=== PAGE 35 ===
+RR Date Format
+Current Year
+1995
+1995
+2001
+2001
+Specified Date
+27-OCT-95
+27-OCT-17
+27-OCT-17
+27-OCT-95
+RR Format
+1995
+2017
+2017
+1995
+YY Format
+1995
+1917
+2017
+2095
+If two digits 
+of the 
+current 
+year are:
+0–49
+0–49
+50–99
+50–99
+The return date is in 
+the current century
+The return date is 
+in the century after 
+the current one
+The return date is in 
+the century before 
+the current one
+The return date is in 
+the current century
+If the specified two-digit year is:
+
+
+=== PAGE 36 ===
+Example of RR Date Format
+• To find employees hired prior to 1990, use the RR date format, 
+which produces the same results whether the command is run 
+in 1999 or now:
+SELECT last_name, TO_CHAR(hire_date, 'DD-Mon-YYYY')
+FROM  employees
+WHERE hire_date < TO_DATE('01-Jan-90','DD-Mon-RR');
+
+
+=== PAGE 37 ===
+Nesting Functions
+• Single-row functions can be nested to any level.
+• Nested functions are evaluated from deepest level to the least deep 
+level.
+F3(F2(F1(col,arg1),arg2),arg3)
+Step 1 = Result 1
+Step 2 = Result 2
+Step 3 = Result 3
+
+
+=== PAGE 38 ===
+SELECT last_name,
+  UPPER(CONCAT(SUBSTR (LAST_NAME, 1, 8), '_US'))
+FROM   employees
+WHERE  department_id = 60;
+Nesting Functions
+
+
+=== PAGE 39 ===
+General Functions
+• The following functions work with any data type and pertain to 
+using nulls:
+• NVL (expr1, expr2)
+• NVL2 (expr1, expr2, expr3)
+• NULLIF (expr1, expr2)
+• COALESCE (expr1, expr2, ..., exprn)
+
+
+=== PAGE 40 ===
+NVL Function
+• Converts a null value to an actual value:
+• Data types that can be used are date, character, and number.
+• Data types must match:
+• NVL(commission_pct,0)
+• NVL(hire_date,'01-JAN-97')
+• NVL(job_id,'No Job Yet')
+
+
+=== PAGE 41 ===
+SELECT last_name, salary, NVL(commission_pct, 0),
+   (salary*12) + (salary*12*NVL(commission_pct, 0)) AN_SAL
+FROM employees;
+Using the NVL Function
+…
+1
+1
+2
+2
+
+
+=== PAGE 42 ===
+SELECT last_name,  salary, commission_pct,
+       NVL2(commission_pct, 
+            'SAL+COMM', 'SAL') income
+FROM   employees WHERE department_id IN (50, 80);
+Using the NVL2 Function
+1
+2
+2
+1
+
+
+=== PAGE 43 ===
+SELECT first_name, LENGTH(first_name) "expr1", 
+       last_name,  LENGTH(last_name)  "expr2",
+       NULLIF(LENGTH(first_name), LENGTH(last_name)) result
+FROM   employees;
+Using the NULLIF Function
+…
+1
+2
+3
+1
+2
+3
+
+
+=== PAGE 44 ===
+Using the COALESCE Function
+• The advantage of the COALESCE function over the NVL function is 
+that the COALESCE function can take multiple alternate values.
+• If the first expression is not null, the COALESCE function returns that 
+expression; otherwise, it does a COALESCE of the remaining 
+expressions.
+
+
+=== PAGE 45 ===
+SELECT last_name, 
+       COALESCE(manager_id,commission_pct, -1) comm 
+FROM   employees 
+ORDER BY commission_pct; 
+Using the COALESCE Function
+…
+
+
+=== PAGE 46 ===
+Conditional Expressions
+• Provide the use of IF-THEN-ELSE logic within a SQL statement
+• Use two methods:
+• CASE expression
+• DECODE function
+
+
+=== PAGE 47 ===
+CASE Expression
+• Facilitates conditional inquiries by doing the work of an IF-THEN-
+ELSE statement:
+CASE expr WHEN comparison_expr1 THEN return_expr1
+         [WHEN comparison_expr2 THEN return_expr2
+          WHEN comparison_exprn THEN return_exprn
+          ELSE else_expr]
+END
+
+
+=== PAGE 48 ===
+SELECT last_name, job_id, salary,
+       CASE job_id WHEN 'IT_PROG'  THEN  1.10*salary
+                   WHEN 'ST_CLERK' THEN  1.15*salary
+                   WHEN 'SA_REP'   THEN  1.20*salary
+       ELSE      salary END     "REVISED_SALARY"
+FROM   employees;
+Using the CASE Expression
+• Facilitates conditional inquiries by doing the work of an IF-THEN-
+ELSE statement:
+…
+…
+
+
+=== PAGE 49 ===
+DECODE Function
+• Facilitates conditional inquiries by doing the work of a CASE 
+expression or an IF-THEN-ELSE statement:
+DECODE(col|expression, search1, result1 
+      
+   [, search2, result2,...,]
+      
+   [, default])
+
+
+=== PAGE 50 ===
+SELECT last_name, job_id, salary,
+       DECODE(job_id, 'IT_PROG',  1.10*salary,
+                      'ST_CLERK', 1.15*salary,
+                      'SA_REP',   1.20*salary,
+              salary)
+       REVISED_SALARY
+FROM   employees;
+Using the DECODE Function
+…
+…
+
+
+=== PAGE 51 ===
+SELECT last_name, salary,
+       DECODE (TRUNC(salary/2000, 0),
+                         0, 0.00,
+                         1, 0.09,
+                         2, 0.20,
+                         3, 0.30,
+                         4, 0.40,
+                         5, 0.42,
+                         6, 0.44,
+                            0.45) TAX_RATE
+FROM   employees
+WHERE  department_id = 80;
+Using the DECODE Function
+• Display the applicable tax rate for each employee in department 
+80:
+
+
