@@ -217,6 +217,94 @@
   }
 }
 
+/* Class Selector Bar */
+.class-selector-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  background: rgba(15, 23, 42, 0.4);
+  padding: 0.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  flex-wrap: wrap;
+}
+
+.class-pill-btn {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.25rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.class-pill-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.class-pill-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: var(--cyan-primary);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+
+.class-pill-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--cyan-primary);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.class-pill-btn.active .class-pill-badge {
+  background: var(--cyan-primary);
+  color: #0a0d14;
+}
+
+.class-pill-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Topic Groups in Sidebar */
+.curriculum-topic-group {
+  margin-bottom: 1.25rem;
+}
+
+.curriculum-topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 0.5rem;
+}
+
+.curriculum-topic-header .topic-badge {
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.12rem 0.4rem;
+  border-radius: 3px;
+  color: var(--cyan-primary);
+}
+
 .modules-sidebar {
   display: flex;
   flex-direction: column;

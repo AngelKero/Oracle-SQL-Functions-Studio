@@ -1,12 +1,13 @@
 /**
  * Main Application Orchestrator
  * Coordinates Navigation, Visualizers, SQL Studio, Curriculum, Practices, and Cheatsheet.
+ * Supports hierarchical learning (Clases -> Temas -> Módulos) for Single-Row and Group Functions.
  */
 
 import { SQLEngine } from './engine/sqlEngine.js';
 import { SimulationConfig, TO_CHAR_DATE } from './engine/functions.js';
 import { EMPLOYEES_TABLE, EMPLOYEES_SCHEMA, DUAL_TABLE } from './data/employees.js';
-import { CURRICULUM_MODULES } from './data/curriculum.js';
+import { CURRICULUM_CLASSES, CURRICULUM_MODULES } from './data/curriculum.js';
 import { PRACTICE_EXERCISES, QUIZ_QUESTIONS } from './data/exercises.js';
 import { CHEATSHEET_DATA } from './data/cheatsheet.js';
 import { getIcon } from './data/icons.js';
@@ -17,12 +18,13 @@ import { renderDateVisualizer } from './visualizers/dateVisualizer.js';
 import { renderRRFormatVisualizer } from './visualizers/rrFormatVisualizer.js';
 import { renderNullLogicVisualizer } from './visualizers/nullLogicVisualizer.js';
 import { renderNestingVisualizer } from './visualizers/nestingVisualizer.js';
+import { renderGroupVisualizer } from './visualizers/groupVisualizer.js';
 
 // Global instances
 const sqlEngine = new SQLEngine();
 
-// All 19 Canonical Queries directly from the PDF
-const PDF_QUERIES = [
+// Canonical Queries from Lesson 3 (Single-Row Functions)
+const PDF_QUERIES_CLASE_1 = [
   {
     name: 'Pág. 8: LOWER en WHERE (Búsqueda Case-Insensitive)',
     sql: "SELECT employee_id, last_name, department_id\nFROM   employees\nWHERE  LOWER(last_name) = 'higgins';"
@@ -97,6 +99,76 @@ const PDF_QUERIES = [
   }
 ];
 
+// Canonical Queries from Lesson 4 (Group Functions)
+const PDF_QUERIES_CLASE_2 = [
+  {
+    name: 'Pág. 6: AVG, MAX, MIN, SUM con job_id LIKE \'%REP%\'',
+    sql: "SELECT AVG(salary), MAX(salary),\n       MIN(salary), SUM(salary)\nFROM   employees\nWHERE  job_id LIKE '%REP%';"
+  },
+  {
+    name: 'Pág. 7: MIN y MAX con Fechas de Contratación (hire_date)',
+    sql: "SELECT MIN(hire_date), MAX(hire_date)\nFROM   employees;"
+  },
+  {
+    name: 'Pág. 8: COUNT(*) Total de Filas en Departamento 50',
+    sql: "SELECT COUNT(*)\nFROM   employees\nWHERE  department_id = 50;"
+  },
+  {
+    name: 'Pág. 8: COUNT(expr) Filas No Nulas de Comisión en Dept 80',
+    sql: "SELECT COUNT(commission_pct)\nFROM   employees\nWHERE  department_id = 80;"
+  },
+  {
+    name: 'Pág. 9: COUNT(DISTINCT expr) Departamentos Únicos',
+    sql: "SELECT COUNT(DISTINCT department_id)\nFROM   employees;"
+  },
+  {
+    name: 'Pág. 10: AVG(commission_pct) Ignora Valores Nulos (.2125)',
+    sql: "SELECT AVG(commission_pct)\nFROM   employees;"
+  },
+  {
+    name: 'Pág. 10: AVG(NVL(commission_pct, 0)) Fuerza Inclusión de Nulos (.0425)',
+    sql: "SELECT AVG(NVL(commission_pct, 0))\nFROM   employees;"
+  },
+  {
+    name: 'Pág. 13: GROUP BY por department_id',
+    sql: "SELECT   department_id, AVG(salary)\nFROM     employees\nGROUP BY department_id;"
+  },
+  {
+    name: 'Pág. 14: GROUP BY sin Columna de Agrupación en el SELECT',
+    sql: "SELECT   AVG(salary)\nFROM     employees\nGROUP BY department_id;"
+  },
+  {
+    name: 'Pág. 16: GROUP BY Multicolumna (department_id, job_id)',
+    sql: "SELECT   department_id dept_id, job_id, SUM(salary)\nFROM     employees\nGROUP BY department_id, job_id;"
+  },
+  {
+    name: 'Pág. 17: Demostración Error ORA-00937 (Columna suelta sin GROUP BY)',
+    sql: "SELECT department_id, COUNT(last_name)\nFROM   employees;"
+  },
+  {
+    name: 'Pág. 18: Demostración Error ORA-00934 (Función de grupo en WHERE)',
+    sql: "SELECT   department_id, AVG(salary)\nFROM     employees\nWHERE    AVG(salary) > 8000\nGROUP BY department_id;"
+  },
+  {
+    name: 'Pág. 21: Restricción de Grupos con HAVING MAX(salary) > 10000',
+    sql: "SELECT   department_id, MAX(salary)\nFROM     employees\nGROUP BY department_id\nHAVING   MAX(salary) > 10000;"
+  },
+  {
+    name: 'Pág. 22: Consulta Completa (WHERE + GROUP BY + HAVING + ORDER BY)',
+    sql: "SELECT   job_id, SUM(salary) PAYROLL\nFROM     employees\nWHERE    job_id NOT LIKE '%REP%'\nGROUP BY job_id\nHAVING   SUM(salary) > 13000\nORDER BY SUM(salary);"
+  },
+  {
+    name: 'Pág. 23: Anidamiento de Funciones de Grupo MAX(AVG(salary))',
+    sql: "SELECT   MAX(AVG(salary))\nFROM     employees\nGROUP BY department_id;"
+  }
+];
+
+// Unified list of all canonical queries
+const ALL_PDF_QUERIES = [
+  ...PDF_QUERIES_CLASE_1.map(q => ({ ...q, classId: 'clase-1' })),
+  ...PDF_QUERIES_CLASE_2.map(q => ({ ...q, classId: 'clase-2' }))
+];
+
 document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initSysdatePill();
@@ -142,7 +214,7 @@ function initNavigation() {
   });
 }
 
-function navigateToTab(tabName) {
+export function navigateToTab(tabName) {
   const btn = document.querySelector(`.tab-btn[data-view="${tabName}"]`);
   if (btn) btn.click();
 }
@@ -162,7 +234,6 @@ function initSysdatePill() {
   pill.addEventListener('click', () => {
     SimulationConfig.useFixedReferenceDate = !SimulationConfig.useFixedReferenceDate;
     updateDisplay();
-    // Re-render date visualizer if active
     const dateVizContainer = document.querySelector('#viz-date-container');
     if (dateVizContainer) renderDateVisualizer(dateVizContainer);
   });
@@ -293,6 +364,12 @@ function renderMarkdown(md) {
       continue;
     }
 
+    // Blockquote
+    if (line.startsWith('> ')) {
+      output.push(`<blockquote style="border-left: 3px solid var(--cyan-primary); padding-left: 1rem; color: var(--text-main); margin: 1rem 0;">${formatInline(line.substring(2))}</blockquote>`);
+      continue;
+    }
+
     // Regular paragraph
     output.push(`<p style="margin-bottom: 0.85rem;">${formatInline(line)}</p>`);
   }
@@ -307,22 +384,46 @@ function renderMarkdown(md) {
 }
 
 /* ==========================================================================
-   CURRICULUM VIEW
+   CURRICULUM VIEW (CLASES -> TEMAS -> MÓDULOS)
    ========================================================================== */
 function initCurriculumView() {
+  const classSelector = document.querySelector('#curriculum-class-selector');
   const sidebar = document.querySelector('#curriculum-sidebar');
   const detailContainer = document.querySelector('#curriculum-detail');
 
-  // Render Sidebar
-  sidebar.innerHTML = CURRICULUM_MODULES.map((m, idx) => `
-    <div class="module-nav-item ${idx === 0 ? 'active' : ''}" data-mod-id="${m.id}">
-      <span class="mod-icon">${getIcon(m.icon, 'svg-icon', 20)}</span>
-      <div class="mod-info">
-        <div class="mod-num">Módulo ${m.number} • ${m.pdfPages}</div>
-        <div class="mod-title">${m.title}</div>
+  let currentClassId = 'clase-1';
+  let currentModId = CURRICULUM_CLASSES[0].temas[0].modules[0].id;
+
+  // Render Sidebar grouped by Temas
+  function renderSidebar(classId) {
+    const cls = CURRICULUM_CLASSES.find(c => c.id === classId) || CURRICULUM_CLASSES[0];
+
+    sidebar.innerHTML = cls.temas.map(tema => `
+      <div class="curriculum-topic-group">
+        <div class="curriculum-topic-header">
+          <span>Tema ${tema.number}: ${tema.title}</span>
+          <span class="topic-badge">${tema.modules.length} Mód.</span>
+        </div>
+        ${tema.modules.map(m => `
+          <div class="module-nav-item ${m.id === currentModId ? 'active' : ''}" data-mod-id="${m.id}" data-class-id="${classId}">
+            <span class="mod-icon">${getIcon(m.icon, 'svg-icon', 20)}</span>
+            <div class="mod-info">
+              <div class="mod-num">Módulo ${m.number} • ${m.pdfPages}</div>
+              <div class="mod-title">${m.title}</div>
+            </div>
+          </div>
+        `).join('')}
       </div>
-    </div>
-  `).join('');
+    `).join('');
+
+    // Attach click events
+    sidebar.querySelectorAll('.module-nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const modId = item.getAttribute('data-mod-id');
+        selectModule(modId);
+      });
+    });
+  }
 
   function renderModuleDetail(mod) {
     let sectionsHtml = mod.sections.map(s => {
@@ -349,7 +450,6 @@ function initCurriculumView() {
         `;
       }
 
-      // Render full markdown: tables, lists, code blocks, paragraphs, and inline styles
       const formattedContent = renderMarkdown(s.content);
 
       return `
@@ -361,8 +461,20 @@ function initCurriculumView() {
       `;
     }).join('');
 
+    // Navigation buttons (Prev / Next)
+    const allModsInCurriculum = CURRICULUM_MODULES;
+    const currentIdx = allModsInCurriculum.findIndex(m => m.id === mod.id);
+    const prevMod = currentIdx > 0 ? allModsInCurriculum[currentIdx - 1] : null;
+    const nextMod = currentIdx < allModsInCurriculum.length - 1 ? allModsInCurriculum[currentIdx + 1] : null;
+
     detailContainer.innerHTML = `
       <div class="mod-detail-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+          <span class="class-pill-badge" style="font-size: 0.8rem;">
+            ${mod.classId === 'clase-1' ? 'Clase 1: Single-Row Functions' : 'Clase 2: Group Functions'}
+          </span>
+          <span style="font-size: 0.85rem; color: var(--text-subtle);">${mod.pdfPages}</span>
+        </div>
         <h2 style="display: flex; align-items: center;"><span class="heading-icon">${getIcon(mod.icon, 'svg-icon', 24)}</span> Módulo ${mod.number}: ${mod.title}</h2>
         <div class="mod-detail-sub">${mod.subtitle}</div>
         <p class="viz-desc" style="margin-top: 0.5rem;">${mod.summary}</p>
@@ -381,6 +493,20 @@ function initCurriculumView() {
           </div>
         </div>
       ` : ''}
+
+      <!-- Bottom Module Pagination -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);">
+        ${prevMod ? `
+          <button type="button" class="btn-secondary" id="btn-prev-mod" data-target-mod="${prevMod.id}" data-target-class="${prevMod.classId}">
+            ← Módulo ${prevMod.number}: ${prevMod.title}
+          </button>
+        ` : '<div></div>'}
+        ${nextMod ? `
+          <button type="button" class="btn-primary" id="btn-next-mod" data-target-mod="${nextMod.id}" data-target-class="${nextMod.classId}">
+            Módulo ${nextMod.number}: ${nextMod.title} →
+          </button>
+        ` : '<div></div>'}
+      </div>
     `;
 
     // Attach sample buttons
@@ -390,41 +516,96 @@ function initCurriculumView() {
         openInSQLStudio(sql);
       });
     });
+
+    // Attach Prev/Next buttons
+    const btnPrev = detailContainer.querySelector('#btn-prev-mod');
+    const btnNext = detailContainer.querySelector('#btn-next-mod');
+
+    if (btnPrev) {
+      btnPrev.addEventListener('click', () => {
+        const tId = btnPrev.getAttribute('data-target-mod');
+        const cId = btnPrev.getAttribute('data-target-class');
+        switchClass(cId, tId);
+      });
+    }
+
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        const tId = btnNext.getAttribute('data-target-mod');
+        const cId = btnNext.getAttribute('data-target-class');
+        switchClass(cId, tId);
+      });
+    }
   }
 
   function selectModule(modId) {
-    sidebar.querySelectorAll('.module-nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-mod-id') === modId));
+    currentModId = modId;
     const mod = CURRICULUM_MODULES.find(m => m.id === modId);
-    if (mod) renderModuleDetail(mod);
+    if (!mod) return;
+
+    if (mod.classId !== currentClassId) {
+      currentClassId = mod.classId;
+      classSelector.querySelectorAll('.class-pill-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-class-id') === currentClassId);
+      });
+      renderSidebar(currentClassId);
+    }
+
+    sidebar.querySelectorAll('.module-nav-item').forEach(i => {
+      i.classList.toggle('active', i.getAttribute('data-mod-id') === modId);
+    });
+
+    renderModuleDetail(mod);
+    window.location.hash = modId;
   }
 
-  sidebar.querySelectorAll('.module-nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const modId = item.getAttribute('data-mod-id');
-      selectModule(modId);
-      window.location.hash = modId;
+  function switchClass(classId, defaultModId = null) {
+    currentClassId = classId;
+    classSelector.querySelectorAll('.class-pill-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-class-id') === classId);
+    });
+
+    renderSidebar(classId);
+
+    if (defaultModId) {
+      selectModule(defaultModId);
+    } else {
+      const cls = CURRICULUM_CLASSES.find(c => c.id === classId);
+      if (cls && cls.temas.length > 0 && cls.temas[0].modules.length > 0) {
+        selectModule(cls.temas[0].modules[0].id);
+      }
+    }
+  }
+
+  // Class button clicks
+  classSelector.querySelectorAll('.class-pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const classId = btn.getAttribute('data-class-id');
+      switchClass(classId);
     });
   });
 
-  // Initial check from URL hash
+  // Initial load
   const initialHash = window.location.hash.replace('#', '');
-  if (initialHash.startsWith('mod-')) {
-    selectModule(initialHash);
+  const matchedMod = CURRICULUM_MODULES.find(m => m.id === initialHash);
+  if (matchedMod) {
+    switchClass(matchedMod.classId, matchedMod.id);
   } else {
-    renderModuleDetail(CURRICULUM_MODULES[0]);
+    switchClass('clase-1');
   }
 
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.replace('#', '');
-    if (h.startsWith('mod-')) {
+    const m = CURRICULUM_MODULES.find(item => item.id === h);
+    if (m) {
       navigateToTab('curso');
-      selectModule(h);
+      selectModule(m.id);
     }
   });
 }
 
 /* ==========================================================================
-   VISUALIZERS VIEW
+   VISUALIZERS VIEW (7 HERRAMIENTAS INTERACTIVAS)
    ========================================================================== */
 function initVisualizersView() {
   const tabs = document.querySelectorAll('.viz-sub-tab');
@@ -437,6 +618,7 @@ function initVisualizersView() {
   renderRRFormatVisualizer(document.querySelector('#viz-rr-container'));
   renderNullLogicVisualizer(document.querySelector('#viz-null-container'));
   renderNestingVisualizer(document.querySelector('#viz-nesting-container'));
+  renderGroupVisualizer(document.querySelector('#viz-group-container'));
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -460,18 +642,25 @@ function initSQLStudio() {
   const metricRows = document.querySelector('#metric-rows');
   const metricTime = document.querySelector('#metric-time');
 
-  // Populate presets
+  // Populate presets grouped by Class
   presetSelect.innerHTML = `
-    <option value="">-- Cargar Consulta del PDF (${PDF_QUERIES.length} Ejemplos) --</option>
-    ${PDF_QUERIES.map((q, idx) => `
-      <option value="${idx}">${q.name}</option>
-    `).join('')}
+    <option value="">-- Cargar Consulta de Ejemplo (${ALL_PDF_QUERIES.length} Ejemplos Canónicos del PDF) --</option>
+    <optgroup label="Clase 1: Funciones de Fila Única (Págs. 1 - 51)">
+      ${PDF_QUERIES_CLASE_1.map((q, idx) => `
+        <option value="${idx}">${q.name}</option>
+      `).join('')}
+    </optgroup>
+    <optgroup label="Clase 2: Funciones de Grupo y Agregación (Págs. 1 - 25)">
+      ${PDF_QUERIES_CLASE_2.map((q, idx) => `
+        <option value="${PDF_QUERIES_CLASE_1.length + idx}">${q.name}</option>
+      `).join('')}
+    </optgroup>
   `;
 
   presetSelect.addEventListener('change', () => {
     const idx = presetSelect.value;
     if (idx !== '') {
-      editor.value = PDF_QUERIES[parseInt(idx, 10)].sql;
+      editor.value = ALL_PDF_QUERIES[parseInt(idx, 10)].sql;
       runQuery();
     }
   });
@@ -487,8 +676,9 @@ function initSQLStudio() {
       renderResultsTable(res);
     } catch (err) {
       resultsContainer.innerHTML = `
-        <div style="padding: 1.5rem; color: var(--rose-primary); background: rgba(244, 63, 94, 0.1); border-left: 4px solid var(--rose-primary);">
-          <strong>Error de Ejecución Oracle:</strong> ${err.message}
+        <div style="padding: 1.5rem; color: var(--rose-primary); background: rgba(244, 63, 94, 0.1); border-left: 4px solid var(--rose-primary); border-radius: 4px; font-family: var(--font-mono);">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 1rem;">🛑 Error de Ejecución Oracle:</div>
+          <div>${err.message}</div>
         </div>
       `;
       metricRows.textContent = '0';
@@ -533,9 +723,8 @@ function initSQLStudio() {
   runBtn.addEventListener('click', runQuery);
 
   formatBtn.addEventListener('click', () => {
-    // Basic SQL uppercase keywords format
     let s = editor.value;
-    s = s.replace(/\b(select|from|where|order by|and|or|as|case|when|then|else|end|group by)\b/gi, m => m.toUpperCase());
+    s = s.replace(/\b(select|from|where|order by|and|or|as|case|when|then|else|end|group by|having)\b/gi, m => m.toUpperCase());
     editor.value = s;
   });
 
@@ -552,8 +741,8 @@ function initSQLStudio() {
     }
   });
 
-  // Default query on initial load
-  editor.value = PDF_QUERIES[1].sql; // Page 10 query
+  // Default query on initial load (Page 10 query)
+  editor.value = ALL_PDF_QUERIES[1].sql;
   runQuery();
 }
 
@@ -574,98 +763,142 @@ function initPracticesView() {
   const challengesContainer = document.querySelector('#challenges-container');
   const quizzesContainer = document.querySelector('#quizzes-container');
   const scoreBadge = document.querySelector('#quiz-score-badge');
+  const classFilterBar = document.querySelector('#practices-class-filter');
 
-  // Render Practice 3 Challenges
-  challengesContainer.innerHTML = PRACTICE_EXERCISES.map(p => `
-    <div class="challenge-card" id="card-${p.id}">
-      <div class="challenge-header">
-        <div class="challenge-title">${p.title}</div>
-        <span class="difficulty-badge diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
-      </div>
-      <p class="mod-prose" style="margin-bottom: 1rem;">${p.description}</p>
-      <div class="code-snippet-box">
-        <pre><code id="code-${p.id}">${p.starterSql}</code></pre>
-      </div>
-      <div style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="btn-primary btn-run-chal" data-sql="${encodeURIComponent(p.starterSql)}" data-id="${p.id}">
-          ${getIcon('terminal', 'btn-icon', 14)} Probar en Consola
-        </button>
-        <button type="button" class="btn-secondary btn-hint-chal" data-hint="${encodeURIComponent(p.hint)}">
-          ${getIcon('lightbulb', 'btn-icon', 14)} Ver Pista
-        </button>
-      </div>
-      <div id="hint-${p.id}" class="callout-box callout-tip" style="display: none; margin-top: 1rem;"></div>
-    </div>
-  `).join('');
-
-  challengesContainer.querySelectorAll('.btn-run-chal').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sql = decodeURIComponent(btn.getAttribute('data-sql'));
-      openInSQLStudio(sql);
-    });
-  });
-
-  challengesContainer.querySelectorAll('.btn-hint-chal').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.challenge-card');
-      const hintEl = card.querySelector('.callout-box');
-      hintEl.textContent = decodeURIComponent(btn.getAttribute('data-hint'));
-      hintEl.style.display = hintEl.style.display === 'none' ? 'block' : 'none';
-    });
-  });
-
-  // Render Interactive Quizzes
+  let activeClassFilter = 'all';
   let correctCount = 0;
   const answered = new Set();
 
-  quizzesContainer.innerHTML = QUIZ_QUESTIONS.map((q, idx) => `
-    <div class="quiz-card" id="quiz-${q.id}">
-      <div style="font-size: 0.75rem; color: var(--cyan-primary); font-weight: 700; margin-bottom: 0.25rem;">PREGUNTA ${idx + 1} DE ${QUIZ_QUESTIONS.length} • ${q.category.toUpperCase()}</div>
-      <div class="quiz-q-text">${q.question}</div>
-      <div class="quiz-options">
-        ${q.options.map((opt, optIdx) => `
-          <label class="quiz-opt-label" data-q-id="${q.id}" data-opt-idx="${optIdx}">
-            <input type="radio" name="radio-${q.id}" value="${optIdx}" />
-            <span>${opt}</span>
-          </label>
-        `).join('')}
-      </div>
-      <div id="quiz-expl-${q.id}" class="quiz-expl-box" style="display: none;"></div>
-    </div>
-  `).join('');
-
-  quizzesContainer.querySelectorAll('.quiz-opt-label').forEach(label => {
-    label.addEventListener('click', () => {
-      const qId = label.getAttribute('data-q-id');
-      const optIdx = parseInt(label.getAttribute('data-opt-idx'), 10);
-      const q = QUIZ_QUESTIONS.find(item => item.id === qId);
-      const card = document.querySelector(`#quiz-${qId}`);
-      const explBox = document.querySelector(`#quiz-expl-${qId}`);
-
-      if (answered.has(qId)) return; // Prevent changing after answer
-      answered.add(qId);
-
-      const isCorrect = optIdx === q.answer;
-      if (isCorrect) {
-        correctCount++;
-        label.classList.add('correct-opt');
-        explBox.innerHTML = `<span class="heading-icon" style="color: var(--emerald-primary);">${getIcon('checkCircle', 'svg-icon', 18)}</span> <strong>¡Correcto!</strong> ${q.explanation}`;
-        explBox.style.background = 'rgba(16, 185, 129, 0.15)';
-        explBox.style.color = '#6ee7b7';
-      } else {
-        label.classList.add('wrong-opt');
-        // highlight the correct one
-        const correctLabel = card.querySelector(`[data-opt-idx="${q.answer}"]`);
-        if (correctLabel) correctLabel.classList.add('correct-opt');
-        explBox.innerHTML = `<span class="heading-icon" style="color: var(--rose-primary);">${getIcon('xCircle', 'svg-icon', 18)}</span> <strong>Incorrecto.</strong> ${q.explanation}`;
-        explBox.style.background = 'rgba(244, 63, 94, 0.15)';
-        explBox.style.color = '#fda4af';
-      }
-
-      explBox.style.display = 'block';
-      scoreBadge.textContent = `Puntuación: ${correctCount} / ${QUIZ_QUESTIONS.length}`;
+  function renderChallenges() {
+    const filteredExercises = PRACTICE_EXERCISES.filter(p => {
+      if (activeClassFilter === 'all') return true;
+      return p.classId === activeClassFilter;
     });
-  });
+
+    challengesContainer.innerHTML = filteredExercises.map(p => `
+      <div class="challenge-card" id="card-${p.id}">
+        <div class="challenge-header">
+          <div class="challenge-title">${p.title}</div>
+          <span class="difficulty-badge diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--cyan-primary); font-weight: 600; margin-bottom: 0.5rem;">
+          ${p.classId === 'clase-1' ? 'Clase 1: Single-Row Functions' : 'Clase 2: Group Functions'} • ${p.category}
+        </div>
+        <p class="mod-prose" style="margin-bottom: 1rem;">${p.description}</p>
+        <div class="code-snippet-box">
+          <pre><code id="code-${p.id}">${p.starterSql}</code></pre>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <button type="button" class="btn-primary btn-run-chal" data-sql="${encodeURIComponent(p.starterSql)}" data-id="${p.id}">
+            ${getIcon('terminal', 'btn-icon', 14)} Probar en Consola
+          </button>
+          <button type="button" class="btn-secondary btn-hint-chal" data-hint="${encodeURIComponent(p.hint)}">
+            ${getIcon('lightbulb', 'btn-icon', 14)} Ver Pista
+          </button>
+        </div>
+        <div id="hint-${p.id}" class="callout-box callout-tip" style="display: none; margin-top: 1rem;"></div>
+      </div>
+    `).join('');
+
+    challengesContainer.querySelectorAll('.btn-run-chal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sql = decodeURIComponent(btn.getAttribute('data-sql'));
+        openInSQLStudio(sql);
+      });
+    });
+
+    challengesContainer.querySelectorAll('.btn-hint-chal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.challenge-card');
+        const hintEl = card.querySelector('.callout-box');
+        hintEl.textContent = decodeURIComponent(btn.getAttribute('data-hint'));
+        hintEl.style.display = hintEl.style.display === 'none' ? 'block' : 'none';
+      });
+    });
+  }
+
+  function renderQuizzes() {
+    const filteredQuizzes = QUIZ_QUESTIONS.filter(q => {
+      if (activeClassFilter === 'all') return true;
+      return q.classId === activeClassFilter;
+    });
+
+    quizzesContainer.innerHTML = filteredQuizzes.map((q, idx) => `
+      <div class="quiz-card" id="quiz-${q.id}">
+        <div style="font-size: 0.75rem; color: var(--cyan-primary); font-weight: 700; margin-bottom: 0.25rem;">
+          PREGUNTA ${idx + 1} DE ${filteredQuizzes.length} • ${q.classId === 'clase-1' ? 'CLASE 1' : 'CLASE 2'} • ${q.category.toUpperCase()}
+        </div>
+        <div class="quiz-q-text">${q.question}</div>
+        <div class="quiz-options">
+          ${q.options.map((opt, optIdx) => `
+            <label class="quiz-opt-label" data-q-id="${q.id}" data-opt-idx="${optIdx}">
+              <input type="radio" name="radio-${q.id}" value="${optIdx}" />
+              <span>${opt}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div id="quiz-expl-${q.id}" class="quiz-expl-box" style="display: none;"></div>
+      </div>
+    `).join('');
+
+    quizzesContainer.querySelectorAll('.quiz-opt-label').forEach(label => {
+      label.addEventListener('click', () => {
+        const qId = label.getAttribute('data-q-id');
+        const optIdx = parseInt(label.getAttribute('data-opt-idx'), 10);
+        const q = QUIZ_QUESTIONS.find(item => item.id === qId);
+        const card = document.querySelector(`#quiz-${qId}`);
+        const explBox = document.querySelector(`#quiz-expl-${qId}`);
+
+        if (answered.has(qId)) return;
+        answered.add(qId);
+
+        const isCorrect = optIdx === q.answer;
+        if (isCorrect) {
+          correctCount++;
+          label.classList.add('correct-opt');
+          explBox.innerHTML = `<span class="heading-icon" style="color: var(--emerald-primary);">${getIcon('checkCircle', 'svg-icon', 18)}</span> <strong>¡Correcto!</strong> ${q.explanation}`;
+          explBox.style.background = 'rgba(16, 185, 129, 0.15)';
+          explBox.style.color = '#6ee7b7';
+        } else {
+          label.classList.add('wrong-opt');
+          const correctLabel = card.querySelector(`[data-opt-idx="${q.answer}"]`);
+          if (correctLabel) correctLabel.classList.add('correct-opt');
+          explBox.innerHTML = `<span class="heading-icon" style="color: var(--rose-primary);">${getIcon('xCircle', 'svg-icon', 18)}</span> <strong>Incorrecto.</strong> ${q.explanation}`;
+          explBox.style.background = 'rgba(244, 63, 94, 0.15)';
+          explBox.style.color = '#fda4af';
+        }
+
+        explBox.style.display = 'block';
+        updateScore();
+      });
+    });
+
+    updateScore();
+  }
+
+  function updateScore() {
+    const filteredQuizzes = QUIZ_QUESTIONS.filter(q => {
+      if (activeClassFilter === 'all') return true;
+      return q.classId === activeClassFilter;
+    });
+    scoreBadge.textContent = `Puntuación: ${correctCount} / ${filteredQuizzes.length}`;
+  }
+
+  // Filter Bar events
+  if (classFilterBar) {
+    classFilterBar.querySelectorAll('.cat-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        classFilterBar.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeClassFilter = btn.getAttribute('data-class');
+        renderChallenges();
+        renderQuizzes();
+      });
+    });
+  }
+
+  renderChallenges();
+  renderQuizzes();
 }
 
 /* ==========================================================================
@@ -676,7 +909,7 @@ function initCheatsheetView() {
   const searchInput = document.querySelector('#cheatsheet-search-input');
   const filterBar = document.querySelector('#cat-filter-bar');
 
-  // Categories
+  // Unique Categories
   const categories = ['Todas', ...new Set(CHEATSHEET_DATA.map(c => c.category))];
   filterBar.innerHTML = categories.map((cat, idx) => `
     <button type="button" class="cat-filter-btn ${idx === 0 ? 'active' : ''}" data-cat="${cat}">${cat}</button>
@@ -755,7 +988,7 @@ function initSchemaView() {
     </tr>
   `).join('');
 
-  employeesTbody.innerHTML = EMPLOYEES_TABLE.slice(0, 10).map(emp => `
+  employeesTbody.innerHTML = EMPLOYEES_TABLE.slice(0, 15).map(emp => `
     <tr>
       <td>${emp.employee_id}</td>
       <td>${emp.first_name}</td>

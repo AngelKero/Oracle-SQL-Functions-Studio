@@ -117,8 +117,15 @@ export function renderMarkdown(md) {
     if (line === '') continue;
 
     // Subheadings
+    // Subheadings
     if (line.startsWith('### ')) {
       output.push(`<h4 style="color: #fff; margin: 1.25rem 0 0.5rem 0;">${formatInline(line.substring(4))}</h4>`);
+      continue;
+    }
+
+    // Blockquote
+    if (line.startsWith('> ')) {
+      output.push(`<blockquote style="border-left: 3px solid var(--cyan-primary); padding-left: 1rem; color: var(--text-main); margin: 1rem 0;">${formatInline(line.substring(2))}</blockquote>`);
       continue;
     }
 
@@ -137,8 +144,10 @@ export function renderMarkdown(md) {
 
 // Test against all modules
 let errorCount = 0;
+let totalSections = 0;
 for (const m of CURRICULUM_MODULES) {
   for (const s of m.sections) {
+    totalSections++;
     const html = renderMarkdown(s.content);
     if (!html || html.includes('| :--- |')) {
       console.error(`Unrendered table in ${m.id} - ${s.title}`);
@@ -148,7 +157,7 @@ for (const m of CURRICULUM_MODULES) {
 }
 
 if (errorCount === 0) {
-  console.log('✅ Markdown parser correctly processed all 8 curriculum modules and all sections without errors!');
+  console.log(`✅ Markdown parser correctly processed all ${CURRICULUM_MODULES.length} curriculum modules (${totalSections} sections) without errors!`);
 } else {
   console.error(`❌ Found ${errorCount} errors`);
   process.exit(1);

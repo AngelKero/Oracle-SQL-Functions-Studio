@@ -326,5 +326,97 @@ export const CHEATSHEET_DATA = [
     example: "DECODE(job_id, 'IT_PROG', 1.10*salary, salary)",
     output: 'Salario revisado',
     sqlExample: "SELECT last_name, job_id, salary, DECODE(job_id, 'IT_PROG', 1.10*salary, salary) REVISED_SALARY FROM employees;"
+  },
+
+  // Group / Aggregate Functions (Lesson 4)
+  {
+    name: 'AVG',
+    category: 'Funciones de Grupo',
+    syntax: 'AVG([DISTINCT|ALL] n)',
+    description: 'Calcula el promedio aritmético de los valores numéricos del grupo. Ignora automáticamente los valores nulos a menos que se use NVL.',
+    returnType: 'NUMBER',
+    example: 'AVG(salary)',
+    output: '8150',
+    sqlExample: "SELECT AVG(salary) FROM employees WHERE job_id LIKE '%REP%';"
+  },
+  {
+    name: 'SUM',
+    category: 'Funciones de Grupo',
+    syntax: 'SUM([DISTINCT|ALL] n)',
+    description: 'Calcula la suma total acumulada de los valores numéricos de un grupo. Ignora valores nulos.',
+    returnType: 'NUMBER',
+    example: 'SUM(salary)',
+    output: '32600',
+    sqlExample: "SELECT SUM(salary) FROM employees WHERE job_id LIKE '%REP%';"
+  },
+  {
+    name: 'MIN',
+    category: 'Funciones de Grupo',
+    syntax: 'MIN([DISTINCT|ALL] expr)',
+    description: 'Devuelve el valor mínimo de un conjunto de valores. Es polimórfica: acepta números, caracteres (orden alfabético) y fechas (más antigua).',
+    returnType: 'Mismo que expr',
+    example: 'MIN(hire_date)',
+    output: "'17-JUN-87'",
+    sqlExample: 'SELECT MIN(hire_date) FROM employees;'
+  },
+  {
+    name: 'MAX',
+    category: 'Funciones de Grupo',
+    syntax: 'MAX([DISTINCT|ALL] expr)',
+    description: 'Devuelve el valor máximo de un conjunto de valores. Acepta tipos numéricos, cadenas de caracteres y fechas (más reciente).',
+    returnType: 'Mismo que expr',
+    example: 'MAX(hire_date)',
+    output: "'29-JAN-00'",
+    sqlExample: 'SELECT MAX(hire_date) FROM employees;'
+  },
+  {
+    name: 'COUNT',
+    category: 'Funciones de Grupo',
+    syntax: 'COUNT({ * | [DISTINCT|ALL] expr })',
+    description: 'COUNT(*) cuenta todas las filas incluyendo nulos. COUNT(expr) cuenta solo valores no nulos. COUNT(DISTINCT expr) cuenta valores únicos no nulos.',
+    returnType: 'NUMBER',
+    example: 'COUNT(DISTINCT department_id)',
+    output: '7',
+    sqlExample: 'SELECT COUNT(DISTINCT department_id) FROM employees;'
+  },
+  {
+    name: 'STDDEV',
+    category: 'Funciones de Grupo',
+    syntax: 'STDDEV([DISTINCT|ALL] n)',
+    description: 'Calcula la desviación estándar de los valores del grupo respecto al promedio. Ignora nulos.',
+    returnType: 'NUMBER',
+    example: 'STDDEV(salary)',
+    output: 'Desviación estándar',
+    sqlExample: 'SELECT STDDEV(salary) FROM employees;'
+  },
+  {
+    name: 'VARIANCE',
+    category: 'Funciones de Grupo',
+    syntax: 'VARIANCE([DISTINCT|ALL] n)',
+    description: 'Calcula la varianza matemática de la muestra para los valores del grupo. Ignora nulos.',
+    returnType: 'NUMBER',
+    example: 'VARIANCE(salary)',
+    output: 'Varianza',
+    sqlExample: 'SELECT VARIANCE(salary) FROM employees;'
+  },
+  {
+    name: 'GROUP BY',
+    category: 'Funciones de Grupo',
+    syntax: 'GROUP BY expr1 [, expr2, ...]',
+    description: 'Cláusula que divide las filas de la tabla en grupos basados en columnas comunes. Todas las columnas en SELECT no agregadas deben estar en GROUP BY.',
+    returnType: 'Cláusula SQL',
+    example: 'GROUP BY department_id, job_id',
+    output: 'Filas agrupadas',
+    sqlExample: 'SELECT department_id, job_id, SUM(salary) FROM employees GROUP BY department_id, job_id;'
+  },
+  {
+    name: 'HAVING',
+    category: 'Funciones de Grupo',
+    syntax: 'HAVING group_condition',
+    description: 'Cláusula para filtrar grupos después de aplicar las funciones de grupo. A diferencia de WHERE, sí permite funciones de grupo.',
+    returnType: 'Cláusula SQL',
+    example: 'HAVING MAX(salary) > 10000',
+    output: 'Grupos filtrados',
+    sqlExample: 'SELECT department_id, MAX(salary) FROM employees GROUP BY department_id HAVING MAX(salary) > 10000;'
   }
 ];
