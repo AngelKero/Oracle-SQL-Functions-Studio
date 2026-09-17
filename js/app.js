@@ -187,36 +187,54 @@ function initNavigation() {
   const navButtons = document.querySelectorAll('.tab-btn');
   const sections = document.querySelectorAll('.view-section');
 
-  function switchTab(targetView) {
+  function switchTab(targetView, updateHash = true) {
     navButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === targetView));
     sections.forEach(sec => sec.classList.toggle('active', sec.id === `view-${targetView}`));
-    window.location.hash = targetView;
+    if (updateHash) {
+      window.location.hash = targetView;
+    }
   }
 
   navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetView = btn.getAttribute('data-view');
-      switchTab(targetView);
+      switchTab(targetView, true);
     });
   });
 
   // Check initial hash
   const initialHash = window.location.hash.replace('#', '');
-  if (initialHash && document.querySelector(`.tab-btn[data-view="${initialHash}"]`)) {
-    switchTab(initialHash);
+  if (initialHash.startsWith('viz-')) {
+    switchTab('visualizers', false);
+  } else if (initialHash.startsWith('mod-')) {
+    switchTab('curso', false);
+  } else if (initialHash && document.querySelector(`.tab-btn[data-view="${initialHash}"]`)) {
+    switchTab(initialHash, false);
   }
 
   window.addEventListener('hashchange', () => {
     const hash = window.location.hash.replace('#', '');
-    if (hash && document.querySelector(`.tab-btn[data-view="${hash}"]`)) {
-      switchTab(hash);
+    if (hash.startsWith('viz-')) {
+      switchTab('visualizers', false);
+    } else if (hash.startsWith('mod-')) {
+      switchTab('curso', false);
+    } else if (hash && document.querySelector(`.tab-btn[data-view="${hash}"]`)) {
+      switchTab(hash, false);
     }
   });
 }
 
-export function navigateToTab(tabName) {
+export function navigateToTab(tabName, updateHash = true) {
   const btn = document.querySelector(`.tab-btn[data-view="${tabName}"]`);
-  if (btn) btn.click();
+  const sections = document.querySelectorAll('.view-section');
+  const navButtons = document.querySelectorAll('.tab-btn');
+  if (btn) {
+    navButtons.forEach(b => b.classList.toggle('active', b === btn));
+    sections.forEach(sec => sec.classList.toggle('active', sec.id === `view-${tabName}`));
+    if (updateHash) {
+      window.location.hash = tabName;
+    }
+  }
 }
 
 /* ==========================================================================
@@ -525,7 +543,7 @@ function initCurriculumView() {
       btnPrev.addEventListener('click', () => {
         const tId = btnPrev.getAttribute('data-target-mod');
         const cId = btnPrev.getAttribute('data-target-class');
-        switchClass(cId, tId);
+        switchClass(cId, tId, true);
       });
     }
 
@@ -533,12 +551,12 @@ function initCurriculumView() {
       btnNext.addEventListener('click', () => {
         const tId = btnNext.getAttribute('data-target-mod');
         const cId = btnNext.getAttribute('data-target-class');
-        switchClass(cId, tId);
+        switchClass(cId, tId, true);
       });
     }
   }
 
-  function selectModule(modId) {
+  function selectModule(modId, updateHash = false) {
     currentModId = modId;
     const mod = CURRICULUM_MODULES.find(m => m.id === modId);
     if (!mod) return;
@@ -556,10 +574,12 @@ function initCurriculumView() {
     });
 
     renderModuleDetail(mod);
-    window.location.hash = modId;
+    if (updateHash) {
+      window.location.hash = modId;
+    }
   }
 
-  function switchClass(classId, defaultModId = null) {
+  function switchClass(classId, defaultModId = null, updateHash = false) {
     currentClassId = classId;
     classSelector.querySelectorAll('.class-pill-btn').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-class-id') === classId);
@@ -568,11 +588,11 @@ function initCurriculumView() {
     renderSidebar(classId);
 
     if (defaultModId) {
-      selectModule(defaultModId);
+      selectModule(defaultModId, updateHash);
     } else {
       const cls = CURRICULUM_CLASSES.find(c => c.id === classId);
       if (cls && cls.temas.length > 0 && cls.temas[0].modules.length > 0) {
-        selectModule(cls.temas[0].modules[0].id);
+        selectModule(cls.temas[0].modules[0].id, updateHash);
       }
     }
   }
@@ -581,7 +601,7 @@ function initCurriculumView() {
   classSelector.querySelectorAll('.class-pill-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const classId = btn.getAttribute('data-class-id');
-      switchClass(classId);
+      switchClass(classId, null, true);
     });
   });
 
@@ -589,17 +609,17 @@ function initCurriculumView() {
   const initialHash = window.location.hash.replace('#', '');
   const matchedMod = CURRICULUM_MODULES.find(m => m.id === initialHash);
   if (matchedMod) {
-    switchClass(matchedMod.classId, matchedMod.id);
+    switchClass(matchedMod.classId, matchedMod.id, false);
   } else {
-    switchClass('clase-1');
+    switchClass('clase-1', null, false);
   }
 
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.replace('#', '');
     const m = CURRICULUM_MODULES.find(item => item.id === h);
     if (m) {
-      navigateToTab('curso');
-      selectModule(m.id);
+      navigateToTab('curso', false);
+      selectModule(m.id, false);
     }
   });
 }
@@ -620,12 +640,33 @@ function initVisualizersView() {
   renderNestingVisualizer(document.querySelector('#viz-nesting-container'));
   renderGroupVisualizer(document.querySelector('#viz-group-container'));
 
+  function switchVisualizer(target) {
+    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-viz') === target));
+    panels.forEach(p => p.classList.toggle('active', p.id === `viz-${target}-container`));
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const target = tab.getAttribute('data-viz');
-      tabs.forEach(t => t.classList.toggle('active', t === tab));
-      panels.forEach(p => p.classList.toggle('active', p.id === `viz-${target}-container`));
+      switchVisualizer(target);
+      window.location.hash = `viz-${target}`;
     });
+  });
+
+  const initialHash = window.location.hash.replace('#', '');
+  if (initialHash.startsWith('viz-')) {
+    const targetViz = initialHash.replace('viz-', '');
+    navigateToTab('visualizers', false);
+    switchVisualizer(targetViz);
+  }
+
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (h.startsWith('viz-')) {
+      const targetViz = h.replace('viz-', '');
+      navigateToTab('visualizers', false);
+      switchVisualizer(targetViz);
+    }
   });
 }
 

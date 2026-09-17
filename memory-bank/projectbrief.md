@@ -1,39 +1,58 @@
-# Project Brief: Oracle SQL Single-Row Functions Interactive Learning Platform
+# Project Brief: Oracle SQL Functions Studio (Single-Row & Group Functions)
 
 ## Objetivo
-Desarrollar una herramienta web interactiva, educativa y de estética premium de última generación que permita a estudiantes y desarrolladores dominar de forma visual, práctica y exhaustiva todos los conceptos explicados en el documento `usingsingle-rowfunctionstocustomizeoutput-170503103323.pdf` (Oracle Database SQL: Using Single-Row Functions to Customize Output).
+Desarrollar una plataforma web interactiva, educativa y de estética premium de última generación que permita a estudiantes y desarrolladores dominar de forma visual, práctica y exhaustiva todos los conceptos de funciones SQL de Oracle contenidos en dos lecciones fundamentales:
+1. **Clase 1**: `usingsingle-rowfunctionstocustomizeoutput-170503103323.pdf` (*Using Single-Row Functions to Customize Output*, 51 páginas).
+2. **Clase 2**: `reportingaggregateddatausingthegroupfunctions-170503103401.pdf` (*Reporting Aggregated Data Using the Group Functions*, 25 páginas).
 
-## Alcance del Contenido del PDF (51 Páginas)
-1. **Fundamentos**: Diferencias entre funciones de fila única (*Single-row*) y funciones de grupos de filas (*Multiple-row*), características, argumentos, tipos de datos y retorno.
-2. **Funciones de Carácter**:
-   - Manipulación de mayúsculas/minúsculas: `LOWER`, `UPPER`, `INITCAP`.
-   - Manipulación de caracteres: `CONCAT`, `SUBSTR` (con índices positivos y negativos), `LENGTH`, `INSTR` (búsqueda de ocurrencias), `LPAD`, `RPAD`, `TRIM` (especificando prefijos/sufijos), `REPLACE`.
-3. **Funciones Numéricas**: `ROUND`, `TRUNC` (decimales positivos, 0 y negativos), `MOD` (residuo).
-4. **Funciones de Fecha y Aritmética de Fechas**:
-   - Formato interno de Oracle (siglo, año, mes, día, hora, minutos, segundos) y formato por defecto `DD-MON-RR`.
-   - Función `SYSDATE`.
-   - Aritmética: suma/resta de días, resta entre fechas (días transcurridos), fracciones de día (`/24`).
-   - Funciones especializadas: `MONTHS_BETWEEN`, `ADD_MONTHS`, `NEXT_DAY`, `LAST_DAY`, `ROUND` y `TRUNC` de fechas a nivel `MONTH` y `YEAR`.
-5. **Funciones de Conversión y Formateo**:
-   - Conversión implícita vs. explícita.
-   - `TO_CHAR` con fechas: modelos de formato (`YYYY`, `YEAR`, `MM`, `MONTH`, `MON`, `DY`, `DAY`, `DD`, `HH24:MI:SS AM`, sufijo `"de"`, elemento `fm` supresor de espacios).
-   - `TO_CHAR` con números: elementos de formato (`9`, `0`, `$`, `L`, `.`, `,`, `MI`, `PR`, `EEEE`, `V`, `B`).
-   - `TO_NUMBER` y `TO_DATE`.
-   - Formato de siglo `RR` vs `YY`: matriz de decisión de siglos según el año actual (0-49 vs 50-99).
-6. **Anidamiento de Funciones (Nesting)**: Evaluación desde el nivel más interno al más externo.
-7. **Funciones Generales para Manejo de Nulos**:
-   - `NVL(expr1, expr2)`
-   - `NVL2(expr1, expr2, expr3)`
-   - `NULLIF(expr1, expr2)`
-   - `COALESCE(expr1, expr2, ..., exprn)`
-8. **Expresiones Condicionales**:
-   - Expresión `CASE` (simple y con búsqueda).
-   - Función `DECODE` (lógica de bifurcación condicional y cálculo de tramos con `TRUNC(salary/2000)`).
+## Jerarquía de Aprendizaje (Clases → Temas → Módulos)
+La plataforma estructura el contenido en una jerarquía estricta de 3 niveles:
 
-## Requisitos Clave
-- **Simulador Interactivo de Funciones**: Un laboratorio/playground interactivo donde se puede probar cada función con parámetros en vivo, desglosando la ejecución paso a paso (visualizando cómo se cortan caracteres, cómo se redondea en la recta numérica, cómo se calcula la matriz de siglos RR, etc.).
-- **Motor SQL Simulado en Memoria**: Con la tabla clásica `EMPLOYEES` (con columnas reales: `employee_id`, `first_name`, `last_name`, `job_id`, `salary`, `commission_pct`, `hire_date`, `manager_id`, `department_id`) y tabla `DUAL`, permitiendo ejecutar consultas SQL reales del PDF y consultas personalizadas.
-- **Visualizador Paso a Paso ("Visual Explainer")**: Para funciones complejas como `SUBSTR`, `INSTR`, `LPAD/RPAD`, `ROUND/TRUNC` de fechas, `RR Date Format`, y `DECODE`.
-- **Modo Guía de Estudio / Módulos Interactivos**: Organización por módulos temáticos con explicaciones claras, diagramas visuales, sintaxis, ejemplos del PDF y ejercicios prácticos de autoevaluación.
-- **Modo Retos y Quizzes (Gamificación & Práctica)**: Desafíos guiados (como los de Practice 3 del PDF) con retroalimentación inmediata, pistas y soluciones comentadas.
-- **Hoja de Referencia Rápida (Cheatsheet)**: Buscador instantáneo de funciones con sintaxis, parámetros y ejemplos interactivos.
+### Clase 1: Funciones de Fila Única (Single-Row Functions)
+- **Tema 1: Fundamentos y Conceptos Clave**
+  - Módulo 1: Introducción a Funciones SQL y de Fila Única (Págs. 1-7)
+- **Tema 2: Funciones de Manipulación de Caracteres**
+  - Módulo 2: Funciones de Caracteres: Case & Manipulation (Págs. 8-11)
+- **Tema 3: Funciones Numéricas y Aritmética**
+  - Módulo 3: Funciones Numéricas (Págs. 12-14)
+- **Tema 4: Fechas, Aritmética y Conversiones**
+  - Módulo 4: Fechas y Aritmética de Fechas (Págs. 15-22)
+  - Módulo 5: Funciones de Conversión de Datos y Formato RR (Págs. 23-37)
+- **Tema 5: Funciones Generales y Expresiones Condicionales**
+  - Módulo 6: Anidamiento de Funciones (Nesting) (Págs. 38-39)
+  - Módulo 7: Funciones Generales para Manejo de Valores Nulos (Págs. 40-46)
+  - Módulo 8: Expresiones Condicionales: CASE y DECODE (Págs. 47-51)
+
+### Clase 2: Funciones de Grupo y Agregación (Group Functions)
+- **Tema 1: Fundamentos de Funciones de Grupo**
+  - Módulo 9: Qué son las Funciones de Grupo y Sintaxis Básica (Págs. 1-5)
+  - Módulo 10: Funciones Agregadas Básicas: AVG, SUM, MIN, MAX (Págs. 6-7)
+- **Tema 2: Manejo de Nulos y Conteo Avanzado**
+  - Módulo 11: La Función COUNT y Conteo de Filas vs Columnas (Págs. 8-9)
+  - Módulo 12: Funciones de Grupo y Valores Nulos (NVL en Agregación) (Págs. 10-11)
+- **Tema 3: Particionamiento y Creación de Grupos**
+  - Módulo 13: Creación de Grupos de Datos: Cláusula GROUP BY (Págs. 12-14)
+  - Módulo 14: Agrupamiento por Múltiples Columnas (Págs. 15-16)
+- **Tema 4: Filtrado Avanzado de Agrupaciones**
+  - Módulo 15: Restricción de Resultados de Grupo: Cláusula HAVING (Págs. 19-21)
+  - Módulo 16: Combinación WHERE, GROUP BY, HAVING y ORDER BY (Págs. 22)
+- **Tema 5: Anidamiento y Diagnóstico de Errores Oracle**
+  - Módulo 17: Anidamiento de Funciones de Grupo (Págs. 23)
+  - Módulo 18: Diagnóstico de Errores Comunes: ORA-00937 y ORA-00934 (Págs. 17-18)
+
+## Herramientas y Modos de la Plataforma
+1. **Curso Interactivo**: Selector de Clases (Pills interactivos), Sidebar dinámico agrupado por Temas y Módulos con badges numéricos, páginas del PDF, visualizadores de código, diagramas ASCII y botón "Probar en SQL Studio".
+2. **Laboratorio Visual (7 Herramientas Interactivas)**:
+   - *String Slicer & Indexes*: Manipulación visual de índices 1-based y negativos en `SUBSTR`, `INSTR`, `LPAD`, `RPAD`.
+   - *Number Precision*: Recta numérica animada de `ROUND` vs `TRUNC` con precisión positiva, cero y negativa.
+   - *Date Machine*: Aritmética de fechas en vivo con regla del día 16 y 1 de julio para redondeo mensual y anual.
+   - *Matriz de Siglo RR vs YY*: Simulador de cálculo de siglo según el año actual (0-49 vs 50-99).
+   - *Nulos & Flowcharts*: Diagramas de flujo interactivos para `NVL`, `NVL2`, `NULLIF`, `COALESCE`, `CASE`, `DECODE`.
+   - *Pipeline de Anidamiento*: Visualizador en niveles (L1 -> L2 -> L3) de evaluación de funciones anidadas.
+   - *Group Engine (GROUP BY & HAVING)*: Visualizador 3D/tarjetas de partición en "Buckets", cálculo de agregados, filtrado previo en WHERE, filtrado posterior en HAVING, y simulador de errores ORA en vivo.
+3. **SQL Studio**: Consola SQL en el navegador con dataset canónico `EMPLOYEES` (22 registros del esquema HR) y tabla `DUAL`. Menú desplegable con consultas canónicas agrupadas por Clase 1 y Clase 2.
+4. **Prácticas & Quizzes**:
+   - Retos de código guiados para Práctica 3 (Single-Row) y Práctica 4 (Group Functions).
+   - Banco de 20 preguntas de autoevaluación y certificación Oracle con selector de filtro por Clase.
+5. **Cheatsheet**: Buscador instantáneo con categorización por Carácter, Número, Fecha, Conversión, Nulos/Lógica y Grupo/Agregación.
+6. **Esquema BD**: Visualizador de metadatos de las tablas `EMPLOYEES` y `DUAL`.
